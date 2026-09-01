@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title id="page-title">News — Delny Fitrzyk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,500;1,9..144,600&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="brand"><a href="index.html" style="text-decoration:none;">Delny Fitrzyk</a></div>
+    <nav>
+      <a href="index.html#about">About</a>
+      <a href="index.html#gallery">Gallery</a>
+      <a href="index.html#teaching">Teaching</a>
+      <a href="index.html#events">Events</a>
+      <a href="index.html#shop">Shop</a>
+      <a href="index.html#news">News</a>
+      <a href="index.html#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <a href="index.html#news" class="back-link">&larr; Back to News</a>
+    <div id="post-root">
+      <p>Loading…</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">Delny Fitrzyk © 2026 · Mixed Media Textile Artist & Art Teacher · <a href="privacy.html" style="text-decoration:underline;">Privacy Policy</a></div>
+</footer>
+
+<script src="shared.js"></script>
+<script>
+function getSlugFromUrl() {
+  return new URLSearchParams(window.location.search).get('slug') || '';
+}
+
+function renderNotFound(root, message) {
+  root.innerHTML = `
+    <div class="section-head">
+      <span class="eyebrow-plain">News</span>
+      <h2>${escapeHtml(message)}</h2>
+      <p><a href="index.html#news" class="back-link" style="margin:0;">&larr; Back to News</a></p>
+    </div>
+  `;
+}
+
+function renderPost(post) {
+  document.getElementById('page-title').textContent = `${post.Title} — Delny Fitrzyk`;
+  const root = document.getElementById('post-root');
+  const cover = post.CoverImageURL
+    ? `<img class="post-hero-img" src="${escapeHtml(toImageUrl(post.CoverImageURL))}" alt="${escapeHtml(post.Title)}">`
+    : '';
+  root.innerHTML = `
+    ${cover}
+    <span class="eyebrow-plain">${escapeHtml(post.Date)}</span>
+    <h1 style="font-size:clamp(1.8rem,4vw,2.6rem);margin-bottom:24px;">${escapeHtml(post.Title)}</h1>
+    <div class="post-body">${renderBodyHtml(post.Body)}</div>
+  `;
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  const root = document.getElementById('post-root');
+  const slug = getSlugFromUrl();
+
+  if (!slug) {
+    renderNotFound(root, "No post specified.");
+    return;
+  }
+  if (SHEET_ID === 'PASTE_YOUR_GOOGLE_SHEET_ID_HERE') {
+    renderNotFound(root, "The News section isn't connected to a Google Sheet yet.");
+    return;
+  }
+
+  try {
+    const items = await fetchTab(NEWS_TAB, ['Date', 'Title', 'Excerpt']);
+    const post = items.find(p => slugify(p.Title) === slug);
+    if (!post) {
+      renderNotFound(root, "Couldn't find that post.");
+      return;
+    }
+    renderPost(post);
+  } catch (err) {
+    console.warn('[Delny site] Post:', err.message);
+    renderNotFound(root, "Couldn't load that post right now.");
+  }
+});
+</script>
+
+</body>
+</html>
