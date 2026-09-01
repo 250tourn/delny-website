@@ -337,7 +337,7 @@ function wireTestimonialCarousel() {
   }
   function resetTimer() {
     clearInterval(timer);
-    if (slides.length > 1) timer = setInterval(() => goTo(index + 1), 5000);
+    if (slides.length > 1) timer = setInterval(() => goTo(index + 1), 9000);
   }
   dots.forEach((d, i) => d.addEventListener('click', () => { goTo(i); resetTimer(); }));
   resetTimer();
