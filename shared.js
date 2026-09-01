@@ -35,6 +35,15 @@
                       or a Stripe Payment Link — whichever you're using
                       for that item. The button just opens this URL.
 
+        "Testimonials" — header row: Quote | Author
+          - Quote:  the testimonial text (no need to add quote marks —
+                    the site adds them).
+          - Author: whoever it's attributed to, e.g. "Amanda Berry,
+                    Community Wellbeing Centre Coordinator" or just
+                    "Happy Customer, October 2023" — whatever reads best.
+          - These auto-rotate in a horizontal carousel near the bottom
+            of the homepage, in the order they appear in the sheet.
+
         "News" — header row: Date | Title | Excerpt | CoverImageURL | Body
           - Rows display in the order they appear in the sheet, so put
             the newest post at the top.
@@ -74,6 +83,7 @@ const GALLERY_TAB = 'Gallery';
 const EVENTS_TAB = 'Events';
 const SHOP_TAB = 'Shop';
 const NEWS_TAB = 'News';
+const TESTIMONIALS_TAB = 'Testimonials';
 
 function sheetCsvUrl(tabName) {
   return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(tabName)}`;

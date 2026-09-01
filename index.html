@@ -79,13 +79,6 @@
   </div>
 </section>
 
-<div class="quote-block reveal">
-  <div class="wrap">
-    <blockquote>"Delny plans and facilitates a wonderful session for our clients who all have an acquired brain injury. She has such amazing ideas and never fails to inspire and engage with the group."</blockquote>
-    <cite>— Amanda Berry, Community Wellbeing Centre Coordinator</cite>
-  </div>
-</div>
-
 <section id="events" class="reveal">
   <div class="wrap">
     <div class="section-head">
@@ -180,6 +173,40 @@
   </div>
 </section>
 
+<section class="testimonial-band reveal">
+  <div class="wrap">
+    <div class="testimonial-viewport">
+      <div class="testimonial-track" id="testimonial-track">
+        <div class="testimonial-slide">
+          <blockquote>"Delny plans and facilitates a wonderful session for our clients who all have an acquired brain injury. She has such amazing ideas and never fails to inspire and engage with the group."</blockquote>
+          <cite>— Amanda Berry, Community Wellbeing Centre Coordinator</cite>
+        </div>
+        <div class="testimonial-slide">
+          <blockquote>"Delny has a lovely and empathetic manner with children and a natural ability to nurture creativity in others. Taking a holistic approach, Delny champions a safe, inclusive, and exceptionally caring space enabling her pupils to flourish in the fullest sense. I could not recommend Delny more highly."</blockquote>
+          <cite>— Mrs Finola Jackson, Headteacher</cite>
+        </div>
+        <div class="testimonial-slide">
+          <blockquote>"Delny thoughtfully and inclusively tailors her workshops to all levels of ability. Her sensitive and client-based approach slowly builds individual confidence, develops new skills and aesthetic awareness as she actively involves the client in the artwork from start to finish."</blockquote>
+          <cite>— Student's Mother</cite>
+        </div>
+        <div class="testimonial-slide">
+          <blockquote>"I absolutely loved today's workshop, it was amazingly inspirational, and I had so many ideas of what I wanted to create that it was hard to decide! Thank you for the tuition and support that helped me create my personal piece today."</blockquote>
+          <cite>— Mel Holliday</cite>
+        </div>
+        <div class="testimonial-slide">
+          <blockquote>"I thought you might like to see where your painting is hanging in my kitchen. It is really perfect there, and all my family have admired it. Thank you so much, I absolutely love it, and it captures the moody Shropshire autumn scenery wonderfully."</blockquote>
+          <cite>— Happy Customer, October 2023</cite>
+        </div>
+        <div class="testimonial-slide">
+          <blockquote>"We just wanted to say a massive thank you for the lovely, framed artwork, they are amazing and we have already had several comments. They will be loved and admired by many more staff, residents and families. You are very talented."</blockquote>
+          <cite>— Private Commission, July 2023</cite>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-dots" id="testimonial-dots"></div>
+  </div>
+</section>
+
 <div class="contact-bg reveal" id="contact">
   <div class="wrap contact-grid" style="padding:64px 0;">
     <div>
@@ -269,15 +296,67 @@ function renderNews(items) {
   }).join('');
 }
 
+function renderTestimonials(items) {
+  if (!items.length) return;
+  const track = document.getElementById('testimonial-track');
+  if (!track) return;
+  track.innerHTML = items.map(t => `
+    <div class="testimonial-slide">
+      <blockquote>"${escapeHtml(t.Quote)}"</blockquote>
+      <cite>— ${escapeHtml(t.Author)}</cite>
+    </div>
+  `).join('');
+}
+
+// Builds the dots and starts auto-advancing through whatever slides are
+// currently in #testimonial-track — works the same whether that's the
+// placeholder slides baked into the page or ones just injected from the
+// Sheet by renderTestimonials above. Slides horizontally, one at a time,
+// looping back to the start; clicking a dot jumps there and resets the
+// timer.
+function wireTestimonialCarousel() {
+  const track = document.getElementById('testimonial-track');
+  const dotsWrap = document.getElementById('testimonial-dots');
+  if (!track) return;
+  const slides = [...track.children];
+  if (!slides.length) return;
+
+  if (dotsWrap) {
+    dotsWrap.innerHTML = slides.map((_, i) =>
+      `<button class="testimonial-dot${i === 0 ? ' active' : ''}" aria-label="Testimonial ${i + 1}"></button>`
+    ).join('');
+  }
+  const dots = dotsWrap ? [...dotsWrap.children] : [];
+  let index = 0;
+  let timer;
+
+  function goTo(i) {
+    index = (i + slides.length) % slides.length;
+    track.style.transform = `translateX(-${index * 100}%)`;
+    dots.forEach((d, di) => d.classList.toggle('active', di === index));
+  }
+  function resetTimer() {
+    clearInterval(timer);
+    if (slides.length > 1) timer = setInterval(() => goTo(index + 1), 5000);
+  }
+  dots.forEach((d, i) => d.addEventListener('click', () => { goTo(i); resetTimer(); }));
+  resetTimer();
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   if (SHEET_ID === 'PASTE_YOUR_GOOGLE_SHEET_ID_HERE') {
     console.warn('[Delny site] Google Sheet not configured yet — showing placeholder content. See the comment at the top of this script.');
+    wireTestimonialCarousel();
     return;
   }
   fetchTab(GALLERY_TAB, ['Title', 'ImageURL']).then(renderGallery).catch(err => console.warn('[Delny site] Gallery:', err.message));
   fetchTab(EVENTS_TAB, ['Date', 'Title']).then(renderEvents).catch(err => console.warn('[Delny site] Events:', err.message));
   fetchTab(SHOP_TAB, ['Title', 'Price', 'ImageURL', 'BuyLink']).then(renderShop).catch(err => console.warn('[Delny site] Shop:', err.message));
   fetchTab(NEWS_TAB, ['Date', 'Title', 'Excerpt']).then(renderNews).catch(err => console.warn('[Delny site] News:', err.message));
+  fetchTab(TESTIMONIALS_TAB, ['Quote', 'Author'])
+    .then(renderTestimonials)
+    .catch(err => console.warn('[Delny site] Testimonials:', err.message))
+    .finally(() => wireTestimonialCarousel());
 });
 </script>
 
