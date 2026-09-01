@@ -191,3 +191,26 @@ function renderBodyHtml(body) {
     return `<p>${withBreaks}</p>`;
   }).join('\n');
 }
+
+// Fades + rises any element with class="reveal" into view as the
+// visitor scrolls to it (see .reveal / .reveal.is-visible in
+// shared.css). Skips the animation entirely for anyone who has
+// requested reduced motion at the OS/browser level.
+function initScrollReveal() {
+  const targets = document.querySelectorAll('.reveal');
+  if (!targets.length) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    targets.forEach(el => el.classList.add('is-visible'));
+    return;
+  }
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
+  targets.forEach(el => observer.observe(el));
+}
+document.addEventListener('DOMContentLoaded', initScrollReveal);
