@@ -60,11 +60,51 @@
       <h2>A selection of past work</h2>
       <p>New pieces go up on Instagram first. This is a running archive.</p>
     </div>
-    <div class="gallery-grid">
-      <a href="#"><figure><img src="https://placehold.co/400x400/8A9A7A/F6F2E9?text=Long+Mynd"></figure></a>
-      <a href="#"><figure><img src="https://placehold.co/400x400/7A4B5C/F6F2E9?text=Loch+Lomond"></figure></a>
-      <a href="#"><figure><img src="https://placehold.co/400x400/B98A2E/2B2B24?text=Carding+Mill"></figure></a>
-      <a href="#"><figure><img src="https://placehold.co/400x400/3F4B36/F6F2E9?text=Foxgloves"></figure></a>
+    <div class="gallery-categories">
+      <div class="gallery-category">
+        <h3>Landscapes</h3>
+        <div class="gallery-scroll-wrap">
+          <button class="gallery-arrow prev" type="button" aria-label="Scroll Landscapes left">&lsaquo;</button>
+          <div class="gallery-strip" data-category="Landscapes">
+            <a href="#"><figure><img src="https://placehold.co/300x300/8A9A7A/F6F2E9?text=Long+Mynd" alt="Long Mynd"></figure></a>
+            <a href="#"><figure><img src="https://placehold.co/300x300/6F8060/F6F2E9?text=Carding+Mill" alt="Carding Mill"></figure></a>
+          </div>
+          <button class="gallery-arrow next" type="button" aria-label="Scroll Landscapes right">&rsaquo;</button>
+        </div>
+      </div>
+      <div class="gallery-category">
+        <h3>Nature</h3>
+        <div class="gallery-scroll-wrap">
+          <button class="gallery-arrow prev" type="button" aria-label="Scroll Nature left">&lsaquo;</button>
+          <div class="gallery-strip" data-category="Nature">
+            <a href="#"><figure><img src="https://placehold.co/300x300/3F4B36/F6F2E9?text=Foxgloves" alt="Foxgloves"></figure></a>
+            <a href="#"><figure><img src="https://placehold.co/300x300/587049/F6F2E9?text=Wildflowers" alt="Wildflowers"></figure></a>
+          </div>
+          <button class="gallery-arrow next" type="button" aria-label="Scroll Nature right">&rsaquo;</button>
+        </div>
+      </div>
+      <div class="gallery-category">
+        <h3>Prints &amp; Cards</h3>
+        <div class="gallery-scroll-wrap">
+          <button class="gallery-arrow prev" type="button" aria-label="Scroll Prints & Cards left">&lsaquo;</button>
+          <div class="gallery-strip" data-category="Prints &amp; Cards">
+            <a href="#"><figure><img src="https://placehold.co/300x300/7A4B5C/F6F2E9?text=Corbet+Wood+Print" alt="Corbet Wood Print"></figure></a>
+            <a href="#"><figure><img src="https://placehold.co/300x300/8F5C6E/F6F2E9?text=Wrekin+Card" alt="Wrekin Card"></figure></a>
+          </div>
+          <button class="gallery-arrow next" type="button" aria-label="Scroll Prints & Cards right">&rsaquo;</button>
+        </div>
+      </div>
+      <div class="gallery-category">
+        <h3>Sketchbooks</h3>
+        <div class="gallery-scroll-wrap">
+          <button class="gallery-arrow prev" type="button" aria-label="Scroll Sketchbooks left">&lsaquo;</button>
+          <div class="gallery-strip" data-category="Sketchbooks">
+            <a href="#"><figure><img src="https://placehold.co/300x300/B98A2E/2B2B24?text=Sketchbook+Page+1" alt="Sketchbook Page 1"></figure></a>
+            <a href="#"><figure><img src="https://placehold.co/300x300/CBA24C/2B2B24?text=Sketchbook+Page+2" alt="Sketchbook Page 2"></figure></a>
+          </div>
+          <button class="gallery-arrow next" type="button" aria-label="Scroll Sketchbooks right">&rsaquo;</button>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -247,12 +287,41 @@
 
 function renderGallery(items) {
   if (!items.length) return;
-  const grid = document.querySelector('.gallery-grid');
-  grid.innerHTML = items.map(item => `
-    <a href="${escapeHtml(item.Link || item.ImageURL || '#')}" target="_blank" rel="noopener">
-      <figure><img src="${escapeHtml(toImageUrl(item.ImageURL))}" alt="${escapeHtml(item.Title)}" loading="lazy"></figure>
-    </a>
-  `).join('');
+  const byCategory = {};
+  items.forEach(item => {
+    const cat = String(item.Section || '').trim();
+    (byCategory[cat] = byCategory[cat] || []).push(item);
+  });
+  // Only touch categories that actually have rows in the sheet — a
+  // category with none keeps showing its placeholder images rather
+  // than going blank.
+  GALLERY_CATEGORIES.forEach(cat => {
+    const catItems = byCategory[cat];
+    if (!catItems || !catItems.length) return;
+    const strip = document.querySelector(`.gallery-strip[data-category="${cat}"]`);
+    if (!strip) return;
+    strip.innerHTML = catItems.map(item => `
+      <a href="${escapeHtml(item.Link || item.ImageURL || '#')}" target="_blank" rel="noopener">
+        <figure><img src="${escapeHtml(toImageUrl(item.ImageURL))}" alt="${escapeHtml(item.Title)}" loading="lazy"></figure>
+      </a>
+    `).join('');
+  });
+}
+
+// Wires the ‹ › arrows next to each gallery category to nudge that
+// category's own strip left/right. Works the same on the placeholder
+// images or ones just injected by renderGallery above, since it reads
+// whatever is currently in each strip rather than a fixed list.
+function wireGalleryArrows() {
+  document.querySelectorAll('.gallery-scroll-wrap').forEach(wrap => {
+    const strip = wrap.querySelector('.gallery-strip');
+    const prev = wrap.querySelector('.gallery-arrow.prev');
+    const next = wrap.querySelector('.gallery-arrow.next');
+    if (!strip) return;
+    const nudge = () => Math.max(strip.clientWidth * 0.8, 150);
+    if (prev) prev.addEventListener('click', () => strip.scrollBy({ left: -nudge(), behavior: 'smooth' }));
+    if (next) next.addEventListener('click', () => strip.scrollBy({ left: nudge(), behavior: 'smooth' }));
+  });
 }
 
 function renderEvents(items) {
@@ -356,9 +425,13 @@ document.addEventListener('DOMContentLoaded', () => {
   if (SHEET_ID === 'PASTE_YOUR_GOOGLE_SHEET_ID_HERE') {
     console.warn('[Delny site] Google Sheet not configured yet — showing placeholder content. See the comment at the top of this script.');
     wireTestimonialCarousel();
+    wireGalleryArrows();
     return;
   }
-  fetchTab(GALLERY_TAB, ['Title', 'ImageURL']).then(renderGallery).catch(err => console.warn('[Delny site] Gallery:', err.message));
+  fetchTab(GALLERY_TAB, ['Title', 'ImageURL', 'Section'])
+    .then(renderGallery)
+    .catch(err => console.warn('[Delny site] Gallery:', err.message))
+    .finally(() => wireGalleryArrows());
   fetchTab(EVENTS_TAB, ['Date', 'Title']).then(renderEvents).catch(err => console.warn('[Delny site] Events:', err.message));
   fetchTab(SHOP_TAB, ['Title', 'Price', 'ImageURL', 'BuyLink']).then(renderShop).catch(err => console.warn('[Delny site] Shop:', err.message));
   fetchTab(NEWS_TAB, ['Date', 'Title', 'Excerpt']).then(renderNews).catch(err => console.warn('[Delny site] News:', err.message));

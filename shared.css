@@ -132,17 +132,58 @@ section{padding:64px 0;}
 .about-grid img{border-radius:2px;}
 .about-text p{max-width:56ch;}
 
-/* gallery */
+/* gallery — 2x2 grid of categories, each independently scrollable */
 .gallery-bg{background:var(--linen-deep);}
-.gallery-grid{
+.gallery-categories{
   display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:14px;
+  grid-template-columns:1fr;
+  gap:36px;
 }
-@media(min-width:640px){.gallery-grid{grid-template-columns:repeat(4,1fr);}}
-.gallery-grid figure{margin:0;overflow:hidden;border-radius:2px;aspect-ratio:1/1;background:#ddd;}
-.gallery-grid img{width:100%;height:100%;object-fit:cover;transition:transform .4s ease;}
-.gallery-grid a:hover img{transform:scale(1.05);}
+@media(min-width:760px){.gallery-categories{grid-template-columns:1fr 1fr;}}
+.gallery-category{min-width:0;}
+.gallery-category h3{
+  font-size:1.05rem;
+  margin-bottom:14px;
+}
+.gallery-scroll-wrap{display:flex;align-items:center;gap:8px;}
+.gallery-strip{
+  display:flex;
+  gap:12px;
+  overflow-x:auto;
+  scroll-snap-type:x mandatory;
+  scroll-behavior:smooth;
+  padding-bottom:4px;
+  flex:1;
+  min-width:0;
+}
+.gallery-strip a{
+  flex:0 0 130px;
+  display:block;
+  scroll-snap-align:start;
+}
+.gallery-strip figure{
+  margin:0;
+  width:100%;
+  overflow:hidden;
+  border-radius:2px;
+  aspect-ratio:1/1;
+  background:#ddd;
+}
+.gallery-strip img{width:100%;height:100%;object-fit:cover;transition:transform .4s ease;}
+.gallery-strip a:hover img{transform:scale(1.05);}
+.gallery-arrow{
+  flex:0 0 auto;
+  width:32px;height:32px;
+  border-radius:50%;
+  border:1px solid var(--line);
+  background:var(--linen);
+  color:var(--ink);
+  font-size:1.1rem;
+  line-height:1;
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+}
+.gallery-arrow:hover{background:var(--moss);color:var(--linen);border-color:var(--moss);}
 
 /* teaching quote */
 .quote-block{

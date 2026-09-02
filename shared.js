@@ -3,15 +3,25 @@
    ---------------------------------------------------------------------
    GOOGLE SHEET SETUP (one-time)
 
-   1. Create a Google Sheet with four tabs, named exactly:
+   1. Create a Google Sheet with five tabs, named exactly:
 
-        "Gallery" — header row: Title | ImageURL | Link
+        "Gallery" — header row: Title | ImageURL | Link | Section
           - Title:    caption / alt text for the piece
           - ImageURL: paste the ordinary Google Drive share link for the
                       photo (see "Adding photos" below) — the site
                       converts it automatically, no editing needed
           - Link:     (optional) where clicking the thumbnail should go;
                       falls back to ImageURL if left blank
+          - Section:  which of the 4 gallery categories this piece
+                      belongs in — must be spelled exactly one of:
+                        Landscapes
+                        Nature
+                        Prints & Cards
+                        Sketchbooks
+                      Tip: select the whole Section column, then
+                      Data -> Data validation -> Criteria "Dropdown"
+                      and list those 4 options, so you just pick from a
+                      list per row instead of typing it out each time.
 
       Adding photos (Google Drive):
         a. Create a folder in Google Drive, e.g. "Delny Website Images".
@@ -94,6 +104,7 @@ const EVENTS_TAB = 'Events';
 const SHOP_TAB = 'Shop';
 const NEWS_TAB = 'News';
 const TESTIMONIALS_TAB = 'Testimonials';
+const GALLERY_CATEGORIES = ['Landscapes', 'Nature', 'Prints & Cards', 'Sketchbooks'];
 
 function sheetCsvUrl(tabName) {
   return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(tabName)}`;
