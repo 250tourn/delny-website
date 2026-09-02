@@ -284,10 +284,13 @@
 
 <div class="lightbox" id="lightbox">
   <button class="lightbox-close" type="button" aria-label="Close">&times;</button>
+  <button class="lightbox-nav prev" type="button" aria-label="Previous image">&lsaquo;</button>
   <figure>
     <img id="lightbox-img" src="" alt="">
     <figcaption id="lightbox-caption"></figcaption>
+    <div class="lightbox-counter" id="lightbox-counter"></div>
   </figure>
+  <button class="lightbox-nav next" type="button" aria-label="Next image">&rsaquo;</button>
 </div>
 
 <script src="shared.js"></script>
@@ -349,12 +352,29 @@ function wireGalleryArrows() {
 // In-page image viewer for gallery thumbnails that don't have an
 // explicit Link in the sheet, so clicking a piece shows it larger
 // without leaving the site or opening its Google Drive page.
-function openLightbox(src, caption) {
+let lightboxImages = [];
+let lightboxIndex = 0;
+
+function showLightboxImage(index) {
+  if (!lightboxImages.length) return;
+  lightboxIndex = (index + lightboxImages.length) % lightboxImages.length;
+  const item = lightboxImages[lightboxIndex];
+  document.getElementById('lightbox-img').src = item.src;
+  document.getElementById('lightbox-img').alt = item.alt || '';
+  document.getElementById('lightbox-caption').textContent = item.alt || '';
+  const multi = lightboxImages.length > 1;
+  document.querySelectorAll('.lightbox-nav').forEach(btn => { btn.style.display = multi ? 'flex' : 'none'; });
+  document.getElementById('lightbox-counter').textContent = multi ? `${lightboxIndex + 1} / ${lightboxImages.length}` : '';
+}
+
+// `images` is every image in the same gallery category as the one that
+// was clicked, so ‹ › inside the lightbox moves through that category
+// without leaving it or the page.
+function openLightbox(images, startIndex) {
   const lb = document.getElementById('lightbox');
-  if (!lb) return;
-  document.getElementById('lightbox-img').src = src;
-  document.getElementById('lightbox-img').alt = caption || '';
-  document.getElementById('lightbox-caption').textContent = caption || '';
+  if (!lb || !images.length) return;
+  lightboxImages = images;
+  showLightboxImage(startIndex || 0);
   lb.classList.add('open');
   document.body.style.overflow = 'hidden';
 }
@@ -364,6 +384,7 @@ function closeLightbox() {
   lb.classList.remove('open');
   document.body.style.overflow = '';
   document.getElementById('lightbox-img').src = '';
+  lightboxImages = [];
 }
 function wireLightbox() {
   const lb = document.getElementById('lightbox');
@@ -375,16 +396,26 @@ function wireLightbox() {
     const trigger = e.target.closest('[data-lightbox]');
     if (trigger) {
       e.preventDefault();
-      const img = trigger.querySelector('img');
-      if (img) openLightbox(img.src, img.alt);
+      const strip = trigger.closest('.gallery-strip');
+      const triggers = strip ? [...strip.querySelectorAll('a[data-lightbox]')] : [trigger];
+      const images = triggers.map(a => {
+        const img = a.querySelector('img');
+        return { src: img.src, alt: img.alt };
+      });
+      openLightbox(images, triggers.indexOf(trigger));
       return;
     }
+    if (e.target.closest('.lightbox-nav.prev')) { showLightboxImage(lightboxIndex - 1); return; }
+    if (e.target.closest('.lightbox-nav.next')) { showLightboxImage(lightboxIndex + 1); return; }
     if (e.target.closest('.lightbox-close') || e.target === lb) {
       closeLightbox();
     }
   });
   document.addEventListener('keydown', (e) => {
+    if (!lb.classList.contains('open')) return;
     if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowRight') showLightboxImage(lightboxIndex + 1);
+    if (e.key === 'ArrowLeft') showLightboxImage(lightboxIndex - 1);
   });
 }
 
