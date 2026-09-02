@@ -60,11 +60,18 @@ function renderPost(post) {
   const cover = post.CoverImageURL
     ? `<img class="post-hero-img" src="${escapeHtml(toImageUrl(post.CoverImageURL))}" alt="${escapeHtml(post.Title)}">`
     : '';
+  const extraImages = parseImageList(post['Additional Images']);
+  const gallery = extraImages.length
+    ? `<div class="post-gallery">${extraImages.map(url => `
+        <figure><img src="${escapeHtml(toImageUrl(url))}" alt="${escapeHtml(post.Title)}" loading="lazy"></figure>
+      `).join('')}</div>`
+    : '';
   root.innerHTML = `
     ${cover}
     <span class="eyebrow-plain">${escapeHtml(post.Date)}</span>
     <h1 style="font-size:clamp(1.8rem,4vw,2.6rem);margin-bottom:24px;">${escapeHtml(post.Title)}</h1>
     <div class="post-body">${renderBodyHtml(post.Body)}</div>
+    ${gallery}
   `;
 }
 

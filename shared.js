@@ -65,6 +65,14 @@
                 an image at full width — same Drive-link workflow as
                 everywhere else on the site.
 
+          - Additional Images: (optional) a separate, simpler way to add
+                            photos without touching the Body text at all.
+                            Paste one Google Drive share link per line
+                            (Alt+Enter between each in the cell — commas
+                            also work if that's easier) and they appear
+                            as a neat photo grid underneath the post,
+                            no formatting needed.
+
    2. Share the sheet: Share -> General access -> "Anyone with the link"
       -> Viewer. (No Google login needed for visitors, and nothing is
       editable from the public link.)
@@ -162,6 +170,16 @@ function toImageUrl(url) {
     if (m) return `https://lh3.googleusercontent.com/d/${m[1]}=w1200`;
   }
   return url;
+}
+
+// Splits a cell containing several Drive/image links — one per line
+// and/or comma-separated, whichever the sheet author found easiest to
+// paste — into a clean array of individual URLs.
+function parseImageList(str) {
+  return String(str || '')
+    .split(/[\n,]+/)
+    .map(s => s.trim())
+    .filter(Boolean);
 }
 
 // Turns a post Title into the URL-friendly slug used to link to it
