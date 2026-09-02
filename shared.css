@@ -132,6 +132,35 @@ section{padding:64px 0;}
 .about-grid img{border-radius:2px;}
 .about-text p{max-width:56ch;}
 
+/* teaching — a small scrapbook-style photo pair beside the text */
+.teaching-grid{display:grid;gap:44px;align-items:center;}
+@media(min-width:760px){.teaching-grid{grid-template-columns:1.1fr 0.9fr;}}
+.teaching-photos{position:relative;margin-bottom:44px;max-width:340px;}
+@media(min-width:760px){.teaching-photos{margin-bottom:0;margin-left:auto;}}
+.teaching-photos figure{margin:0;}
+.teaching-photos img{width:100%;aspect-ratio:4/5;object-fit:cover;display:block;}
+.teaching-photos .photo-a{
+  width:82%;
+  margin-left:auto;
+  border-radius:2px;
+  overflow:hidden;
+  box-shadow:0 18px 40px rgba(43,43,36,0.2);
+  transform:rotate(-2deg);
+}
+.teaching-photos .photo-b{
+  position:absolute;
+  left:0;
+  bottom:-44px;
+  width:56%;
+  background:var(--linen);
+  padding:6px 6px 10px;
+  border-radius:2px;
+  box-shadow:0 18px 40px rgba(43,43,36,0.25);
+  transform:rotate(4deg);
+  z-index:1;
+}
+.teaching-photos .photo-b img{border-radius:1px;}
+
 /* gallery — 2x2 grid of categories, each independently scrollable */
 .gallery-bg{background:var(--linen-deep);}
 .gallery-categories{
