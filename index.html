@@ -277,6 +277,8 @@ function renderShop(items) {
     <div class="shop-card">
       <div class="thumb"><img src="${escapeHtml(toImageUrl(item.ImageURL))}" alt="${escapeHtml(item.Title)}" loading="lazy"></div>
       <h3>${escapeHtml(item.Title)}</h3>
+      ${item.Dimensions ? `<div class="dimensions">${escapeHtml(item.Dimensions)}</div>` : ''}
+      ${item.Description ? `<p class="description">${escapeHtml(item.Description)}</p>` : ''}
       <div class="price">${escapeHtml(item.Price)}</div>
       ${item.BuyLink ? `<a href="${escapeHtml(item.BuyLink)}" class="buy-btn" target="_blank" rel="noopener">Buy now</a>` : ''}
     </div>

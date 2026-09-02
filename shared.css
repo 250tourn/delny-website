@@ -225,6 +225,8 @@ section{padding:64px 0;}
 .shop-card .thumb{aspect-ratio:4/3;background:#ddd;border-radius:2px;margin-bottom:14px;overflow:hidden;}
 .shop-card .thumb img{width:100%;height:100%;object-fit:cover;}
 .shop-card h3{font-size:1.05rem;margin-bottom:4px;}
+.shop-card .dimensions{font-size:0.8rem;color:#6a6a5c;margin-bottom:8px;}
+.shop-card .description{font-size:0.88rem;color:#4b4b40;margin:0 0 12px 0;}
 .shop-card .price{font-family:'Fraunces', serif;font-style:italic;color:var(--berry);margin-bottom:12px;}
 .buy-btn{
   display:inline-block;

@@ -29,11 +29,13 @@
           - Rows display in the order they appear in the sheet, so keep
             them sorted by date manually.
 
-        "Shop" — header row: Title | Price | ImageURL | BuyLink
-          - ImageURL: same Google Drive share-link workflow as Gallery
-          - BuyLink:  a PayPal.me link, a PayPal "Buy Now" button link,
-                      or a Stripe Payment Link — whichever you're using
-                      for that item. The button just opens this URL.
+        "Shop" — header row: Title | Price | ImageURL | BuyLink | Dimensions | Description
+          - ImageURL:    same Google Drive share-link workflow as Gallery
+          - BuyLink:     a PayPal.me link, a PayPal "Buy Now" button link,
+                         or a Stripe Payment Link — whichever you're using
+                         for that item. The button just opens this URL.
+          - Dimensions:  (optional) e.g. "30 x 40cm" — shown under the title.
+          - Description: (optional) a short line or two about the piece.
 
         "Testimonials" — header row: Quote | Author
           - Quote:  the testimonial text (no need to add quote marks —
