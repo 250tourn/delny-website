@@ -53,11 +53,22 @@ nav a:hover{color:var(--berry);}
 
 /* hero */
 .hero{
-  background:var(--moss);
+  background:var(--moss); /* fallback shown briefly before the photo loads */
   color:var(--linen);
   padding:90px 0 70px;
   position:relative;
   overflow:hidden;
+}
+.hero::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:0;
+  background-image:
+    linear-gradient(rgba(46,55,40,0.45), rgba(46,55,40,0.45)),
+    url('https://lh3.googleusercontent.com/d/1t58tdUTsbZOy5jJSNsnALin8qFEDSBko=w1600');
+  background-size:cover;
+  background-position:center 40%;
 }
 .hero .wrap{position:relative;z-index:2;max-width:640px;}
 .hero .kicker{
@@ -95,6 +106,7 @@ nav a:hover{color:var(--berry);}
 .hero::after{
   content:"";
   position:absolute;
+  z-index:1;
   right:-60px;top:-60px;
   width:320px;height:320px;
   border-radius:50%;
