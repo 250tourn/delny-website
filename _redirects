@@ -1,0 +1,6 @@
+# Netlify redirects — keeps old delny.org URLs from breaking (and
+# losing their Google ranking) once this site goes live on the domain.
+# Format: old-path  new-path  status-code
+# See: https://docs.netlify.com/manage/routing/redirects/overview/
+
+/privacy-policy/   /privacy.html   301
