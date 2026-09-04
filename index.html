@@ -135,13 +135,18 @@
     <div class="section-head">
       <span class="eyebrow-plain">Events</span>
       <h2>Upcoming workshops & exhibitions</h2>
+      <p>Beyond what's listed here, I run bespoke sessions too — talks for art societies, community groups, schools, and anyone curious about mixed media and stitch. If you've an idea for a workshop, talk, or event, I'd love to hear it — <a href="#contact" style="text-decoration:underline;color:var(--berry);">get in touch</a> and we can chat it through.</p>
     </div>
     <div class="event-list">
       <div class="event-row">
         <div class="event-date">3 Oct</div>
         <div>
           <div class="event-title">Mixed Media Seascapes</div>
-          <div class="event-meta">Shrewsbury Library · 10:30–13:00 · £35</div>
+          <div class="event-meta">
+            <span class="meta-item"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 15s5-4.5 5-8.5A5 5 0 0 0 3 6.5C3 10.5 8 15 8 15Z"/><circle cx="8" cy="6.5" r="1.8"/></svg>Shrewsbury Library</span>
+            <span class="meta-item"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M8 4.5V8l2.8 1.6"/></svg>10:30–13:00</span>
+            <span class="meta-item"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h5.5L14 8.5 8.5 14 2 7.5V2Z"/><circle cx="5.2" cy="5.2" r="1"/></svg>£35</span>
+          </div>
           <a href="#" class="event-link">Book now</a>
         </div>
       </div>
@@ -149,7 +154,11 @@
         <div class="event-date">10 Oct</div>
         <div>
           <div class="event-title">Autumn Inspiration — Mixed Media & Stitch</div>
-          <div class="event-meta">ArtShack, Shrewsbury · 10:00–16:00 · £75</div>
+          <div class="event-meta">
+            <span class="meta-item"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 15s5-4.5 5-8.5A5 5 0 0 0 3 6.5C3 10.5 8 15 8 15Z"/><circle cx="8" cy="6.5" r="1.8"/></svg>ArtShack, Shrewsbury</span>
+            <span class="meta-item"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M8 4.5V8l2.8 1.6"/></svg>10:00–16:00</span>
+            <span class="meta-item"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h5.5L14 8.5 8.5 14 2 7.5V2Z"/><circle cx="5.2" cy="5.2" r="1"/></svg>£75</span>
+          </div>
           <a href="#" class="event-link">Book now</a>
         </div>
       </div>
@@ -157,7 +166,10 @@
         <div class="event-date">21 Nov</div>
         <div>
           <div class="event-title">Create & Connect Kids — Fantastic Faces</div>
-          <div class="event-meta">Jenna Blair Yoga Studio · from £15</div>
+          <div class="event-meta">
+            <span class="meta-item"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 15s5-4.5 5-8.5A5 5 0 0 0 3 6.5C3 10.5 8 15 8 15Z"/><circle cx="8" cy="6.5" r="1.8"/></svg>Jenna Blair Yoga Studio</span>
+            <span class="meta-item"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h5.5L14 8.5 8.5 14 2 7.5V2Z"/><circle cx="5.2" cy="5.2" r="1"/></svg>from £15</span>
+          </div>
           <a href="#" class="event-link">Book now</a>
         </div>
       </div>
@@ -419,20 +431,32 @@ function wireLightbox() {
   });
 }
 
+const ICON_PIN = '<svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 15s5-4.5 5-8.5A5 5 0 0 0 3 6.5C3 10.5 8 15 8 15Z"/><circle cx="8" cy="6.5" r="1.8"/></svg>';
+const ICON_CLOCK = '<svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M8 4.5V8l2.8 1.6"/></svg>';
+const ICON_TAG = '<svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h5.5L14 8.5 8.5 14 2 7.5V2Z"/><circle cx="5.2" cy="5.2" r="1"/></svg>';
+
 function renderEvents(items) {
   if (!items.length) return;
   const list = document.querySelector('.event-list');
-  list.innerHTML = items.map(ev => `
+  list.innerHTML = items.map(ev => {
+    const bookingLink = ev.BookingLink || ev['Booking Link'];
+    const metaItems = [
+      ev.Location ? `<span class="meta-item">${ICON_PIN}${escapeHtml(ev.Location)}</span>` : '',
+      ev.Time ? `<span class="meta-item">${ICON_CLOCK}${escapeHtml(ev.Time)}</span>` : '',
+      ev.Price ? `<span class="meta-item">${ICON_TAG}${escapeHtml(ev.Price)}</span>` : ''
+    ].join('');
+    return `
     <div class="event-row">
       <div class="event-date">${escapeHtml(ev.Date)}</div>
       <div>
         <div class="event-title">${escapeHtml(ev.Title)}</div>
-        <div class="event-meta">${escapeHtml([ev.Location, ev.Time, ev.Price].filter(Boolean).join(' · '))}</div>
+        <div class="event-meta">${metaItems}</div>
         ${ev.Blurb ? `<p class="event-blurb">${escapeHtml(ev.Blurb)}</p>` : ''}
-        ${(() => { const link = ev.BookingLink || ev['Booking Link']; return link ? `<a href="${escapeHtml(link)}" class="event-link" target="_blank" rel="noopener">Book now</a>` : ''; })()}
+        ${bookingLink ? `<a href="${escapeHtml(bookingLink)}" class="event-link" target="_blank" rel="noopener">Book now</a>` : ''}
       </div>
     </div>
-  `).join('');
+  `;
+  }).join('');
 }
 
 function renderShop(items) {

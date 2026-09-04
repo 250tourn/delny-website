@@ -260,11 +260,28 @@ section{padding:64px 0;}
   gap:20px;
   padding:22px 0;
   border-top:1px solid var(--line);
+  align-items:start;
 }
 .event-row:last-child{border-bottom:1px solid var(--line);}
-.event-date{font-family:'Fraunces', serif;font-style:italic;color:var(--berry);font-size:0.95rem;}
-.event-title{font-family:'Fraunces', serif;font-size:1.15rem;margin-bottom:4px;}
-.event-meta{font-size:0.88rem;color:#5b5b4e;margin-bottom:8px;}
+.event-date{
+  font-family:'Fraunces', serif;
+  font-style:italic;
+  font-size:0.85rem;
+  display:inline-block;
+  padding:7px 12px;
+  border-radius:20px;
+  text-align:center;
+  white-space:nowrap;
+}
+/* cycle a soft moss / berry / ochre tint per row so the list doesn't
+   read as one flat block — purely decorative, no meaning to the order */
+.event-row:nth-child(3n+1) .event-date{background:rgba(63,75,54,0.12);color:var(--moss-dark);}
+.event-row:nth-child(3n+2) .event-date{background:rgba(122,75,92,0.14);color:var(--berry);}
+.event-row:nth-child(3n+3) .event-date{background:rgba(185,138,46,0.18);color:#8a6414;}
+.event-title{font-family:'Fraunces', serif;font-size:1.15rem;margin-bottom:8px;}
+.event-meta{display:flex;flex-wrap:wrap;gap:6px 16px;margin-bottom:8px;}
+.event-meta .meta-item{display:inline-flex;align-items:center;gap:6px;font-size:0.88rem;color:#5b5b4e;}
+.event-meta .icon{width:14px;height:14px;flex:0 0 auto;fill:none;stroke:currentColor;stroke-width:1.3;opacity:0.8;}
 .event-blurb{font-size:0.92rem;color:#4b4b40;margin:0 0 10px 0;max-width:56ch;}
 .event-link{font-size:0.88rem;text-decoration:underline;color:var(--berry);}
 
