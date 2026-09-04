@@ -35,9 +35,13 @@
         d. Right-click a photo -> Share -> "Copy link", and paste that
            link straight into the ImageURL (or CoverImageURL) column.
 
-        "Events" — header row: Date | Title | Location | Time | Price | BookingLink
+        "Events" — header row: Date | Title | Location | Time | Price | BookingLink | Blurb
+          - Column order doesn't matter — only the names do, and
+            "BookingLink" or "Booking Link" (with a space) both work.
           - Rows display in the order they appear in the sheet, so keep
             them sorted by date manually.
+          - Blurb: (optional) a sentence or two about the event, shown
+            underneath the location/time/price line.
 
         "Shop" — header row: Title | Price | ImageURL | BuyLink | Dimensions | Description
           - ImageURL:    same Google Drive share-link workflow as Gallery

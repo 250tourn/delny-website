@@ -428,7 +428,8 @@ function renderEvents(items) {
       <div>
         <div class="event-title">${escapeHtml(ev.Title)}</div>
         <div class="event-meta">${escapeHtml([ev.Location, ev.Time, ev.Price].filter(Boolean).join(' · '))}</div>
-        ${ev.BookingLink ? `<a href="${escapeHtml(ev.BookingLink)}" class="event-link" target="_blank" rel="noopener">Book now</a>` : ''}
+        ${ev.Blurb ? `<p class="event-blurb">${escapeHtml(ev.Blurb)}</p>` : ''}
+        ${(() => { const link = ev.BookingLink || ev['Booking Link']; return link ? `<a href="${escapeHtml(link)}" class="event-link" target="_blank" rel="noopener">Book now</a>` : ''; })()}
       </div>
     </div>
   `).join('');

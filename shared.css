@@ -265,6 +265,7 @@ section{padding:64px 0;}
 .event-date{font-family:'Fraunces', serif;font-style:italic;color:var(--berry);font-size:0.95rem;}
 .event-title{font-family:'Fraunces', serif;font-size:1.15rem;margin-bottom:4px;}
 .event-meta{font-size:0.88rem;color:#5b5b4e;margin-bottom:8px;}
+.event-blurb{font-size:0.92rem;color:#4b4b40;margin:0 0 10px 0;max-width:56ch;}
 .event-link{font-size:0.88rem;text-decoration:underline;color:var(--berry);}
 
 /* news — homepage teaser cards */
