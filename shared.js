@@ -43,13 +43,49 @@
           - Blurb: (optional) a sentence or two about the event, shown
             underneath the location/time/price line.
 
-        "Shop" — header row: Title | Price | ImageURL | BuyLink | Dimensions | Description
+        "Shop" — header row: Title | Price | ImageURL | BuyLink | Dimensions | Description | Options
           - ImageURL:    same Google Drive share-link workflow as Gallery
           - BuyLink:     a PayPal.me link, a PayPal "Buy Now" button link,
                          or a Stripe Payment Link — whichever you're using
                          for that item. The button just opens this URL.
+                         Only used when Options (below) is left blank.
           - Dimensions:  (optional) e.g. "30 x 40cm" — shown under the title.
+                         Most useful for a one-off original piece; if a
+                         piece has print/card size options instead, put
+                         those sizes in Options below rather than here.
           - Description: (optional) a short line or two about the piece.
+
+          - Options: (optional) lets one piece offer several ways to buy
+                     it — e.g. the original, plus prints in a couple of
+                     sizes, plus packs of cards — each with its own price
+                     and payment link. Leave this column blank for a
+                     simple single-price item (it'll just show Price and
+                     BuyLink as one "Buy now" button, as before).
+
+                     To use it, put one option per line in the cell
+                     (Alt+Enter between lines), formatted as:
+                       Category | Variant | Price | BuyLink
+                     For example, across 5 lines in one Options cell:
+                       Original artwork (framed) | | £180 | https://paypal.me/you/180
+                       Limited edition print with stitch (mounted, unframed) | A4 | £25 | https://paypal.me/you/25
+                       Limited edition print with stitch (mounted, unframed) | A3 | £40 | https://paypal.me/you/40
+                       A6 cards with stitch | Pack of 5 | £24 | https://paypal.me/you/24
+                       A6 cards with stitch | Pack of 10 | £39 | https://paypal.me/you/39
+
+                     - Category: the group heading shown above its
+                       option(s) — repeat the exact same text (e.g. both
+                       print lines above) to group sizes under one
+                       heading with its own icon. The wording you use
+                       decides the icon: anything with "card" in it gets
+                       a card icon, anything with "print" gets a print
+                       icon, everything else (e.g. "Original artwork")
+                       gets a framed-picture icon.
+                     - Variant: the size/pack label next to the price
+                       (e.g. "A4", "Pack of 10") — leave blank when a
+                       category has only one option, like the original.
+                     - Price / BuyLink: as elsewhere — BuyLink is that
+                       specific option's own PayPal/Stripe link, since
+                       each size or pack usually needs its own price.
 
         "Testimonials" — header row: Quote | Author
           - Quote:  the testimonial text (no need to add quote marks —

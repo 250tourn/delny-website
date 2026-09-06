@@ -184,13 +184,30 @@
     <div class="section-head">
       <span class="eyebrow-plain">Shop</span>
       <h2>Prints, cards & originals</h2>
+      <p>All prices include UK postage.</p>
     </div>
     <div class="shop-grid">
       <div class="shop-card">
         <div class="thumb"><img src="https://placehold.co/300x225/8A9A7A/F6F2E9?text=Corbet+Wood"></div>
         <h3>Corbet Wood View</h3>
-        <div class="price">£18.00</div>
-        <a href="#" class="buy-btn">Buy with PayPal</a>
+        <div class="dimensions">30 x 40cm (original)</div>
+        <p class="description">An original mixed media piece inspired by Corbet Wood.</p>
+        <div class="shop-options">
+          <div class="option-group">
+            <div class="option-group-title"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="1.5" width="13" height="13" rx="1"/><rect x="4" y="4" width="8" height="8" rx="0.5"/></svg><span>Original artwork (framed)</span></div>
+            <div class="option-row"><span class="option-variant"></span><span class="option-price">£180</span><a href="#" class="option-buy">Buy</a></div>
+          </div>
+          <div class="option-group">
+            <div class="option-group-title"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="11" rx="1"/><circle cx="5" cy="6" r="1.3"/><path d="M2 12l3.5-4 3 3 2-2.5L14 12"/></svg><span>Limited edition print with stitch (mounted, unframed)</span></div>
+            <div class="option-row"><span class="option-variant">A4</span><span class="option-price">£25</span><a href="#" class="option-buy">Buy</a></div>
+            <div class="option-row"><span class="option-variant">A3</span><span class="option-price">£40</span><a href="#" class="option-buy">Buy</a></div>
+          </div>
+          <div class="option-group">
+            <div class="option-group-title"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="3" width="13" height="10" rx="1"/><path d="M1.5 4l6.5 5 6.5-5"/></svg><span>A6 cards with stitch</span></div>
+            <div class="option-row"><span class="option-variant">Pack of 5</span><span class="option-price">£24</span><a href="#" class="option-buy">Buy</a></div>
+            <div class="option-row"><span class="option-variant">Pack of 10</span><span class="option-price">£39</span><a href="#" class="option-buy">Buy</a></div>
+          </div>
+        </div>
       </div>
       <div class="shop-card">
         <div class="thumb"><img src="https://placehold.co/300x225/B98A2E/2B2B24?text=Wrekin+Autumn"></div>
@@ -459,19 +476,83 @@ function renderEvents(items) {
   }).join('');
 }
 
+const ICON_ORIGINAL = '<svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="1.5" width="13" height="13" rx="1"/><rect x="4" y="4" width="8" height="8" rx="0.5"/></svg>';
+const ICON_PRINT = '<svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="11" rx="1"/><circle cx="5" cy="6" r="1.3"/><path d="M2 12l3.5-4 3 3 2-2.5L14 12"/></svg>';
+const ICON_CARD = '<svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="3" width="13" height="10" rx="1"/><path d="M1.5 4l6.5 5 6.5-5"/></svg>';
+
+function shopOptionIcon(category) {
+  const c = String(category || '').toLowerCase();
+  if (c.includes('card')) return ICON_CARD;
+  if (c.includes('print')) return ICON_PRINT;
+  return ICON_ORIGINAL;
+}
+
+// Options cell format: one purchase option per line (Alt+Enter between
+// them in the sheet), each line "Category | Variant | Price | BuyLink".
+// Variant can be left blank for a category with just one option (e.g.
+// a single original piece with no size choice).
+function parseShopOptions(str) {
+  return String(str || '').split('\n').map(line => line.trim()).filter(Boolean).map(line => {
+    const parts = line.split('|').map(p => p.trim());
+    return { category: parts[0] || '', variant: parts[1] || '', price: parts[2] || '', buyLink: parts[3] || '' };
+  });
+}
+
+// Groups a flat option list back into its categories, preserving the
+// order each category first appears in — so "A4"/"A3" land together
+// under one "Limited edition print..." heading, for example.
+function groupShopOptions(options) {
+  const groups = [];
+  const indexByCategory = {};
+  options.forEach(opt => {
+    if (!(opt.category in indexByCategory)) {
+      indexByCategory[opt.category] = groups.length;
+      groups.push({ category: opt.category, items: [] });
+    }
+    groups[indexByCategory[opt.category]].items.push(opt);
+  });
+  return groups;
+}
+
+function renderShopOptions(options) {
+  const groups = groupShopOptions(options);
+  return `<div class="shop-options">${groups.map(g => `
+    <div class="option-group">
+      <div class="option-group-title">${shopOptionIcon(g.category)}<span>${escapeHtml(g.category)}</span></div>
+      ${g.items.map(opt => `
+        <div class="option-row">
+          <span class="option-variant">${escapeHtml(opt.variant)}</span>
+          <span class="option-price">${escapeHtml(opt.price)}</span>
+          ${opt.buyLink ? `<a href="${escapeHtml(opt.buyLink)}" class="option-buy" target="_blank" rel="noopener">Buy</a>` : ''}
+        </div>
+      `).join('')}
+    </div>
+  `).join('')}</div>`;
+}
+
 function renderShop(items) {
   if (!items.length) return;
   const grid = document.querySelector('.shop-grid');
-  grid.innerHTML = items.map(item => `
+  grid.innerHTML = items.map(item => {
+    const options = parseShopOptions(item.Options);
+    // Options column drives a grouped multi-choice list; leave it blank
+    // on a row to keep the simple single Price + Buy button instead.
+    const pricingHtml = options.length
+      ? renderShopOptions(options)
+      : `
+        <div class="price">${escapeHtml(item.Price)}</div>
+        ${item.BuyLink ? `<a href="${escapeHtml(item.BuyLink)}" class="buy-btn" target="_blank" rel="noopener">Buy now</a>` : ''}
+      `;
+    return `
     <div class="shop-card">
       <div class="thumb"><img src="${escapeHtml(toImageUrl(item.ImageURL))}" alt="${escapeHtml(item.Title)}" loading="lazy"></div>
       <h3>${escapeHtml(item.Title)}</h3>
       ${item.Dimensions ? `<div class="dimensions">${escapeHtml(item.Dimensions)}</div>` : ''}
       ${item.Description ? `<p class="description">${escapeHtml(item.Description)}</p>` : ''}
-      <div class="price">${escapeHtml(item.Price)}</div>
-      ${item.BuyLink ? `<a href="${escapeHtml(item.BuyLink)}" class="buy-btn" target="_blank" rel="noopener">Buy now</a>` : ''}
+      ${pricingHtml}
     </div>
-  `).join('');
+  `;
+  }).join('');
 }
 
 function renderNews(items) {
