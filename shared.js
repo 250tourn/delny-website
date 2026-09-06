@@ -65,8 +65,9 @@
                      To use it, put one option per line in the cell
                      (Alt+Enter between lines), formatted as:
                        Category | Variant | Price | BuyLink
-                     For example, across 5 lines in one Options cell:
-                       Original artwork (framed) | | £180 | https://paypal.me/you/180
+                     For example, across 6 lines in one Options cell:
+                       Original artwork | Framed | £180 | https://paypal.me/you/180
+                       Original artwork | Unframed | £140 | https://paypal.me/you/140
                        Limited edition print with stitch (mounted, unframed) | A4 | £25 | https://paypal.me/you/25
                        Limited edition print with stitch (mounted, unframed) | A3 | £40 | https://paypal.me/you/40
                        A6 cards with stitch | Pack of 5 | £24 | https://paypal.me/you/24
