@@ -137,7 +137,7 @@
       <h2>Upcoming workshops & exhibitions</h2>
       <p>Beyond what's listed here, I run bespoke sessions too — talks for art societies, community groups, schools, and anyone curious about mixed media and stitch. If you've an idea for a workshop, talk, or event, I'd love to hear it — <a href="#contact" style="text-decoration:underline;color:var(--berry);">get in touch</a> and we can chat it through.</p>
     </div>
-    <div class="event-list">
+    <div class="event-list" id="event-list">
       <div class="event-row">
         <div class="event-date">3 Oct</div>
         <div>
@@ -174,6 +174,10 @@
         </div>
       </div>
     </div>
+    <p style="text-align:center;">
+      <button id="events-toggle-older" type="button" class="news-toggle" hidden>Show earlier events</button>
+    </p>
+    <div class="event-list" id="events-older" hidden style="margin-top:8px;"></div>
   </div>
 </section>
 
@@ -457,17 +461,27 @@ const ICON_PIN = '<svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path
 const ICON_CLOCK = '<svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M8 4.5V8l2.8 1.6"/></svg>';
 const ICON_TAG = '<svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h5.5L14 8.5 8.5 14 2 7.5V2Z"/><circle cx="5.2" cy="5.2" r="1"/></svg>';
 
-function renderEvents(items) {
-  if (!items.length) return;
-  const list = document.querySelector('.event-list');
-  list.innerHTML = items.map(ev => {
-    const bookingLink = ev.BookingLink || ev['Booking Link'];
-    const metaItems = [
-      ev.Location ? `<span class="meta-item">${ICON_PIN}${escapeHtml(ev.Location)}</span>` : '',
-      ev.Time ? `<span class="meta-item">${ICON_CLOCK}${escapeHtml(ev.Time)}</span>` : '',
-      ev.Price ? `<span class="meta-item">${ICON_TAG}${escapeHtml(ev.Price)}</span>` : ''
-    ].join('');
-    return `
+// Events use DD/MM/YYYY (UK-style), which JS's native Date parsing
+// would silently misread as MM/DD/YYYY. Returns null for anything that
+// isn't a clean, valid DD/MM/YYYY — callers then treat the event as
+// "always show" rather than guessing.
+function parseUkDate(str) {
+  const m = String(str || '').trim().match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (!m) return null;
+  const day = parseInt(m[1], 10), month = parseInt(m[2], 10) - 1, year = parseInt(m[3], 10);
+  const d = new Date(year, month, day);
+  if (d.getFullYear() !== year || d.getMonth() !== month || d.getDate() !== day) return null;
+  return d;
+}
+
+function eventCardHtml(ev) {
+  const bookingLink = ev.BookingLink || ev['Booking Link'];
+  const metaItems = [
+    ev.Location ? `<span class="meta-item">${ICON_PIN}${escapeHtml(ev.Location)}</span>` : '',
+    ev.Time ? `<span class="meta-item">${ICON_CLOCK}${escapeHtml(ev.Time)}</span>` : '',
+    ev.Price ? `<span class="meta-item">${ICON_TAG}${escapeHtml(ev.Price)}</span>` : ''
+  ].join('');
+  return `
     <div class="event-row">
       <div class="event-date">${escapeHtml(ev.Date)}</div>
       <div>
@@ -478,7 +492,53 @@ function renderEvents(items) {
       </div>
     </div>
   `;
-  }).join('');
+}
+
+let eventsOlderCount = 0;
+
+// Shows every upcoming event plus the 3 most recent past ones; anything
+// further back is tucked behind "Show earlier events". An event whose
+// Date can't be parsed is always shown, same safety principle as News.
+function renderEvents(items) {
+  if (!items.length) return;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const withDates = items.map(ev => ({ ev, date: parseUkDate(ev.Date) }));
+  const past = withDates.filter(x => x.date && x.date < today).sort((a, b) => b.date - a.date);
+  // Past events beyond the 3 most recent get tucked away; everything
+  // else (upcoming, undated, or one of those 3) stays visible.
+  const olderPastEvents = new Set(past.slice(3).map(x => x.ev));
+
+  const visible = [];
+  const older = [];
+  items.forEach(ev => {
+    (olderPastEvents.has(ev) ? older : visible).push(ev);
+  });
+
+  document.getElementById('event-list').innerHTML = visible.map(eventCardHtml).join('');
+
+  eventsOlderCount = older.length;
+  const olderWrap = document.getElementById('events-older');
+  const toggleBtn = document.getElementById('events-toggle-older');
+  if (olderWrap && toggleBtn) {
+    olderWrap.innerHTML = older.map(eventCardHtml).join('');
+    olderWrap.hidden = true;
+    toggleBtn.hidden = older.length === 0;
+    toggleBtn.textContent = `Show ${older.length} earlier event${older.length === 1 ? '' : 's'}`;
+  }
+}
+
+function wireEventsToggle() {
+  const toggleBtn = document.getElementById('events-toggle-older');
+  const olderWrap = document.getElementById('events-older');
+  if (!toggleBtn || !olderWrap) return;
+  toggleBtn.addEventListener('click', () => {
+    olderWrap.hidden = !olderWrap.hidden;
+    toggleBtn.textContent = olderWrap.hidden
+      ? `Show ${eventsOlderCount} earlier event${eventsOlderCount === 1 ? '' : 's'}`
+      : 'Show fewer events';
+  });
 }
 
 // A painter's palette — for the one-off original piece.
@@ -672,6 +732,7 @@ function wireTestimonialCarousel() {
 document.addEventListener('DOMContentLoaded', () => {
   wireLightbox();
   wireNewsToggle();
+  wireEventsToggle();
   if (SHEET_ID === 'PASTE_YOUR_GOOGLE_SHEET_ID_HERE') {
     console.warn('[Delny site] Google Sheet not configured yet — showing placeholder content. See the comment at the top of this script.');
     wireTestimonialCarousel();

@@ -254,6 +254,7 @@ section{padding:64px 0;}
 
 /* events */
 .event-list{display:flex;flex-direction:column;}
+.event-list[hidden]{display:none;}
 .event-row{
   display:grid;
   grid-template-columns:100px 1fr;
