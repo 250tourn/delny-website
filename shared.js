@@ -100,6 +100,12 @@
         "News" — header row: Date | Title | Excerpt | CoverImageURL | Body
           - Rows display in the order they appear in the sheet, so put
             the newest post at the top.
+          - Posts with a Date more than a year old are automatically
+            tucked behind a "Show earlier posts" link on the homepage,
+            so the section doesn't turn into one long wall of old news.
+            Date needs to be a real date (e.g. "10 Sep 2026") for this
+            to work — anything JS can't parse as a date is just always
+            shown, rather than risking a post silently disappearing.
           - Excerpt:       a short 1-2 sentence teaser shown on the
                             homepage card.
           - CoverImageURL: (optional) Drive share link for a header image.

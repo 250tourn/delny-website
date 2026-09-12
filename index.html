@@ -234,7 +234,7 @@
       <span class="eyebrow-plain">News</span>
       <h2>Latest updates</h2>
     </div>
-    <div class="news-list">
+    <div class="news-list" id="news-list">
       <article class="news-post">
         <div class="news-date">Aug 2026</div>
         <h3>Creativity Connecting Generations Through Art</h3>
@@ -251,6 +251,10 @@
         <p>A look back at a year shaped by creativity and courage, my guiding words for the year and how they influenced my journey as an artist and educator.</p>
       </article>
     </div>
+    <p style="text-align:center;">
+      <button id="news-toggle-older" type="button" class="news-toggle" hidden>Show earlier posts</button>
+    </p>
+    <div class="news-list" id="news-older" hidden style="margin-top:8px;"></div>
   </div>
 </section>
 
@@ -559,24 +563,63 @@ function renderShop(items) {
   }).join('');
 }
 
+let newsOlderCount = 0;
+
+function newsCardHtml(post) {
+  const href = `post.html?slug=${encodeURIComponent(slugify(post.Title))}`;
+  const thumb = post.CoverImageURL
+    ? `<div class="thumb"><img src="${escapeHtml(toImageUrl(post.CoverImageURL))}" alt="${escapeHtml(post.Title)}" loading="lazy"></div>`
+    : '';
+  return `
+    <a class="news-card" href="${href}">
+      ${thumb}
+      <div class="news-date">${escapeHtml(post.Date)}</div>
+      <h3>${escapeHtml(post.Title)}</h3>
+      <p>${escapeHtml(post.Excerpt)}</p>
+      <span class="read-more">Read more</span>
+    </a>
+  `;
+}
+
+// Posts older than a year are tucked behind "Show earlier posts" so the
+// section doesn't turn into a long wall of old news. A post whose Date
+// isn't in a format JS can parse is treated as recent (shown by
+// default) rather than risking it vanishing silently.
 function renderNews(items) {
   if (!items.length) return;
-  const list = document.querySelector('.news-list');
-  list.innerHTML = items.map(post => {
-    const href = `post.html?slug=${encodeURIComponent(slugify(post.Title))}`;
-    const thumb = post.CoverImageURL
-      ? `<div class="thumb"><img src="${escapeHtml(toImageUrl(post.CoverImageURL))}" alt="${escapeHtml(post.Title)}" loading="lazy"></div>`
-      : '';
-    return `
-      <a class="news-card" href="${href}">
-        ${thumb}
-        <div class="news-date">${escapeHtml(post.Date)}</div>
-        <h3>${escapeHtml(post.Title)}</h3>
-        <p>${escapeHtml(post.Excerpt)}</p>
-        <span class="read-more">Read more</span>
-      </a>
-    `;
-  }).join('');
+  const cutoff = new Date();
+  cutoff.setFullYear(cutoff.getFullYear() - 1);
+
+  const recent = [];
+  const older = [];
+  items.forEach(post => {
+    const parsed = new Date(post.Date);
+    (!isNaN(parsed) && parsed < cutoff ? older : recent).push(post);
+  });
+
+  document.getElementById('news-list').innerHTML = recent.map(newsCardHtml).join('');
+
+  newsOlderCount = older.length;
+  const olderWrap = document.getElementById('news-older');
+  const toggleBtn = document.getElementById('news-toggle-older');
+  if (olderWrap && toggleBtn) {
+    olderWrap.innerHTML = older.map(newsCardHtml).join('');
+    olderWrap.hidden = true;
+    toggleBtn.hidden = older.length === 0;
+    toggleBtn.textContent = `Show ${older.length} earlier post${older.length === 1 ? '' : 's'}`;
+  }
+}
+
+function wireNewsToggle() {
+  const toggleBtn = document.getElementById('news-toggle-older');
+  const olderWrap = document.getElementById('news-older');
+  if (!toggleBtn || !olderWrap) return;
+  toggleBtn.addEventListener('click', () => {
+    olderWrap.hidden = !olderWrap.hidden;
+    toggleBtn.textContent = olderWrap.hidden
+      ? `Show ${newsOlderCount} earlier post${newsOlderCount === 1 ? '' : 's'}`
+      : 'Show fewer posts';
+  });
 }
 
 function renderTestimonials(items) {
@@ -628,6 +671,7 @@ function wireTestimonialCarousel() {
 
 document.addEventListener('DOMContentLoaded', () => {
   wireLightbox();
+  wireNewsToggle();
   if (SHEET_ID === 'PASTE_YOUR_GOOGLE_SHEET_ID_HERE') {
     console.warn('[Delny site] Google Sheet not configured yet — showing placeholder content. See the comment at the top of this script.');
     wireTestimonialCarousel();
