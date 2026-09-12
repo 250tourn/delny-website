@@ -49,7 +49,10 @@
             underneath the location/time/price line.
           - LogoImage: (optional) a Google Drive share link (same
             workflow as elsewhere) to the venue's logo — shown as a
-            small round thumbnail in place of the generic location pin.
+            small round thumbnail in place of the generic location pin,
+            and also as a larger image alongside the event details on
+            wider screens (hidden on narrow/mobile screens, where
+            there's no spare room for it).
 
         "Shop" — header row: Title | Price | ImageURL | BuyLink | Dimensions | Description | Options
           - ImageURL:    same Google Drive share-link workflow as Gallery

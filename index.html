@@ -493,7 +493,7 @@ function eventCardHtml(ev) {
     ev.Price ? `<span class="meta-item">${ICON_TAG}${escapeHtml(ev.Price)}</span>` : ''
   ].join('');
   return `
-    <div class="event-row">
+    <div class="event-row${logoUrl ? ' has-venue-img' : ''}">
       <div class="event-date">${escapeHtml(ev.Date)}</div>
       <div>
         <div class="event-title">${escapeHtml(ev.Title)}</div>
@@ -501,6 +501,7 @@ function eventCardHtml(ev) {
         ${ev.Blurb ? `<p class="event-blurb">${escapeHtml(ev.Blurb)}</p>` : ''}
         ${bookingLink ? `<a href="${escapeHtml(bookingLink)}" class="event-link" target="_blank" rel="noopener">Book now</a>` : ''}
       </div>
+      ${logoUrl ? `<img class="event-venue-img" src="${escapeHtml(toImageUrl(logoUrl))}" alt="${escapeHtml(ev.Location || 'Venue')}" loading="lazy">` : ''}
     </div>
   `;
 }
