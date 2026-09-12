@@ -35,13 +35,21 @@
         d. Right-click a photo -> Share -> "Copy link", and paste that
            link straight into the ImageURL (or CoverImageURL) column.
 
-        "Events" — header row: Date | Title | Location | Time | Price | BookingLink | Blurb
+        "Events" — header row: Date | Title | Location | Time | Price | BookingLink | Blurb | LogoImage
           - Column order doesn't matter — only the names do, and
-            "BookingLink" or "Booking Link" (with a space) both work.
-          - Rows display in the order they appear in the sheet, so keep
-            them sorted by date manually.
+            "BookingLink" or "Booking Link" (with a space) both work —
+            same for "LogoImage" / "Logo Image".
+          - Date: write it as either "13 Sep 2026" or "13/09/2026" (UK
+            day/month/year, not the US month/day/year order). All
+            upcoming events always show; past events only show the 3
+            most recent, with older ones tucked behind a "Show earlier
+            events" link — so keep using one of these two formats, or a
+            past event might not get hidden when it should.
           - Blurb: (optional) a sentence or two about the event, shown
             underneath the location/time/price line.
+          - LogoImage: (optional) a Google Drive share link (same
+            workflow as elsewhere) to the venue's logo — shown as a
+            small round thumbnail in place of the generic location pin.
 
         "Shop" — header row: Title | Price | ImageURL | BuyLink | Dimensions | Description | Options
           - ImageURL:    same Google Drive share-link workflow as Gallery

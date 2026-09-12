@@ -466,18 +466,29 @@ const ICON_TAG = '<svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path
 // isn't a clean, valid DD/MM/YYYY — callers then treat the event as
 // "always show" rather than guessing.
 function parseUkDate(str) {
-  const m = String(str || '').trim().match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
-  if (!m) return null;
-  const day = parseInt(m[1], 10), month = parseInt(m[2], 10) - 1, year = parseInt(m[3], 10);
-  const d = new Date(year, month, day);
-  if (d.getFullYear() !== year || d.getMonth() !== month || d.getDate() !== day) return null;
-  return d;
+  const s = String(str || '').trim();
+  const m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (m) {
+    const day = parseInt(m[1], 10), month = parseInt(m[2], 10) - 1, year = parseInt(m[3], 10);
+    const d = new Date(year, month, day);
+    return (d.getFullYear() === year && d.getMonth() === month && d.getDate() === day) ? d : null;
+  }
+  // Named-month dates like "13 Sep 2026" have no day/month ambiguity
+  // (unlike numeric D/M/Y), so native parsing is safe for these.
+  const named = new Date(s);
+  return isNaN(named) ? null : named;
 }
 
 function eventCardHtml(ev) {
   const bookingLink = ev.BookingLink || ev['Booking Link'];
+  const logoUrl = ev.LogoImage || ev['Logo Image'];
+  // A real venue logo replaces the generic pin icon when one's given;
+  // otherwise the pin icon carries on as before.
+  const locationIcon = logoUrl
+    ? `<img class="venue-logo" src="${escapeHtml(toImageUrl(logoUrl))}" alt="${escapeHtml(ev.Location || 'Venue')} logo" loading="lazy">`
+    : ICON_PIN;
   const metaItems = [
-    ev.Location ? `<span class="meta-item">${ICON_PIN}${escapeHtml(ev.Location)}</span>` : '',
+    ev.Location ? `<span class="meta-item">${locationIcon}${escapeHtml(ev.Location)}</span>` : '',
     ev.Time ? `<span class="meta-item">${ICON_CLOCK}${escapeHtml(ev.Time)}</span>` : '',
     ev.Price ? `<span class="meta-item">${ICON_TAG}${escapeHtml(ev.Price)}</span>` : ''
   ].join('');
