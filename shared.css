@@ -288,6 +288,7 @@ section{padding:64px 0;}
 
 /* news — homepage teaser cards */
 .news-list{display:grid;gap:28px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));}
+.news-list[hidden]{display:none;}
 .news-toggle{
   margin-top:28px;
   font-family:'Fraunces', serif;
