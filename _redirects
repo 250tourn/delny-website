@@ -8,21 +8,21 @@
 # Old News post URLs (from the previous site), each mapped to its
 # matching post on this one. Every one of these was checked against the
 # actual live post list before being written here — the target for each
-# is exactly what /post.html generates for that post's title (and, for
-# the two "Bridgnorth Open House Arts Trail 2024" posts that share an
-# identical title, with its date appended so each still gets its own
-# real page rather than colliding on one URL).
+# is exactly what /post.html generates for that post's title. (The two
+# Bridgnorth posts were originally identically titled and so needed
+# their date appended to tell them apart; they've since been given their
+# own distinct titles, so their targets below reflect those instead.)
 /news/shrewsbury-arts-crafts/                                          /post.html?slug=shrewsbury-arts-and-crafts   301
 /news/winter-exhibition-at-the-visual-art-network/                     /post.html?slug=winter-exhibition-at-the-visual-art-network   301
 /news/the-shrewsbury-winter-fair/                                      /post.html?slug=the-shrewsbury-winter-fair   301
 /news/happy-new-year/                                                  /post.html?slug=happy-new-year   301
 /news/new-mixed-media-textile-work-for-jan-2024/                       /post.html?slug=new-mixed-media-textile-work-for-jan-2024   301
 /news/vietnam/                                                         /post.html?slug=vietnam   301
-/news/bridgnorth-open-house-arts-trail-2024/                           /post.html?slug=bridgnorth-open-house-arts-trail-2024-13-may-2024   301
+/news/bridgnorth-open-house-arts-trail-2024/                           /post.html?slug=a-look-ahead-to-bridgnorth-open-house-arts-trail-2024   301
 /news/mixed-media-landscape-free-machine-embroidery-workshop/          /post.html?slug=mixed-media-landscape-and-free-machine-embroidery-workshop   301
 /news/art-wellbeing/                                                   /post.html?slug=art-and-wellbeing   301
 /news/artwork-inspired-by-this-years-shrewsbury-arts-trail/            /post.html?slug=artwork-inspired-by-this-years-shrewsbury-arts-trail   301
-/news/bridgnorth-open-house-arts-trail-june-2024/                      /post.html?slug=bridgnorth-open-house-arts-trail-2024-17-jun-2024   301
+/news/bridgnorth-open-house-arts-trail-june-2024/                      /post.html?slug=a-look-back-at-bridgnorth-open-house-arts-trail-2024   301
 /news/a-summer-of-art-in-shrewsbury/                                   /post.html?slug=a-summer-of-art-in-shrewsbury   301
 /news/shropshire-landscape-artist/                                     /post.html?slug=shropshire-landscape-artist   301
 /news/upcoming-events/                                                 /post.html?slug=upcoming-events   301
