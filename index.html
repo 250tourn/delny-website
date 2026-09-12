@@ -751,17 +751,42 @@ document.addEventListener('DOMContentLoaded', () => {
     wireGalleryArrows();
     return;
   }
-  fetchTab(GALLERY_TAB, ['Title', 'ImageURL', 'Section'])
-    .then(renderGallery)
-    .catch(err => console.warn('[Delny site] Gallery:', err.message))
-    .finally(() => wireGalleryArrows());
-  fetchTab(EVENTS_TAB, ['Date', 'Title']).then(renderEvents).catch(err => console.warn('[Delny site] Events:', err.message));
-  fetchTab(SHOP_TAB, ['Title', 'Price', 'ImageURL', 'BuyLink']).then(renderShop).catch(err => console.warn('[Delny site] Shop:', err.message));
-  fetchTab(NEWS_TAB, ['Date', 'Title', 'Excerpt']).then(renderNews).catch(err => console.warn('[Delny site] News:', err.message));
-  fetchTab(TESTIMONIALS_TAB, ['Quote', 'Author'])
-    .then(renderTestimonials)
-    .catch(err => console.warn('[Delny site] Testimonials:', err.message))
-    .finally(() => wireTestimonialCarousel());
+  const pendingRenders = [
+    fetchTab(GALLERY_TAB, ['Title', 'ImageURL', 'Section'])
+      .then(renderGallery)
+      .catch(err => console.warn('[Delny site] Gallery:', err.message))
+      .finally(() => wireGalleryArrows()),
+    fetchTab(EVENTS_TAB, ['Date', 'Title']).then(renderEvents).catch(err => console.warn('[Delny site] Events:', err.message)),
+    fetchTab(SHOP_TAB, ['Title', 'Price', 'ImageURL', 'BuyLink']).then(renderShop).catch(err => console.warn('[Delny site] Shop:', err.message)),
+    fetchTab(NEWS_TAB, ['Date', 'Title', 'Excerpt']).then(renderNews).catch(err => console.warn('[Delny site] News:', err.message)),
+    fetchTab(TESTIMONIALS_TAB, ['Quote', 'Author'])
+      .then(renderTestimonials)
+      .catch(err => console.warn('[Delny site] Testimonials:', err.message))
+      .finally(() => wireTestimonialCarousel())
+  ];
+
+  // Arriving at index.html#news (e.g. from a post's "Back to News" link)
+  // scrolls to #news immediately, before the sections above it have
+  // finished loading their Sheet content and growing to full height —
+  // so that first scroll lands short, further up the page than intended
+  // once everything's settled. Re-scrolling once all the above content
+  // has actually loaded corrects for that. Web fonts swapping in late
+  // (Fraunces/Work Sans replacing the fallback font) also reflows text
+  // height across every section above, so that's waited on too.
+  if (window.location.hash) {
+    const rescrollToHash = () => {
+      const target = document.querySelector(window.location.hash);
+      if (target) target.scrollIntoView({ behavior: 'instant', block: 'start' });
+    };
+    Promise.all([
+      Promise.allSettled(pendingRenders),
+      document.fonts ? document.fonts.ready : Promise.resolve()
+    ]).then(() => {
+      rescrollToHash();
+      // Belt-and-suspenders: catches any late reflow the above missed.
+      setTimeout(rescrollToHash, 400);
+    });
+  }
 });
 </script>
 

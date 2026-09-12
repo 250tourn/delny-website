@@ -72,6 +72,7 @@ function renderPost(post) {
     <h1 style="font-size:clamp(1.8rem,4vw,2.6rem);margin-bottom:24px;">${escapeHtml(post.Title)}</h1>
     <div class="post-body">${renderBodyHtml(post.Body)}</div>
     ${gallery}
+    <a href="index.html#news" class="back-link" style="margin-top:2em;margin-bottom:0;">&larr; Back to News</a>
   `;
 }
 
