@@ -652,8 +652,8 @@ function renderShop(items) {
 
 let newsOlderCount = 0;
 
-function newsCardHtml(post) {
-  const href = `post.html?slug=${encodeURIComponent(slugify(post.Title))}`;
+function newsCardHtml(post, allPosts) {
+  const href = `post.html?slug=${encodeURIComponent(newsPostSlug(post, allPosts))}`;
   const thumb = post.CoverImageURL
     ? `<div class="thumb"><img src="${escapeHtml(toImageUrl(post.CoverImageURL))}" alt="${escapeHtml(post.Title)}" loading="lazy"></div>`
     : '';
@@ -684,13 +684,13 @@ function renderNews(items) {
     (!isNaN(parsed) && parsed < cutoff ? older : recent).push(post);
   });
 
-  document.getElementById('news-list').innerHTML = recent.map(newsCardHtml).join('');
+  document.getElementById('news-list').innerHTML = recent.map(post => newsCardHtml(post, items)).join('');
 
   newsOlderCount = older.length;
   const olderWrap = document.getElementById('news-older');
   const toggleBtn = document.getElementById('news-toggle-older');
   if (olderWrap && toggleBtn) {
-    olderWrap.innerHTML = older.map(newsCardHtml).join('');
+    olderWrap.innerHTML = older.map(post => newsCardHtml(post, items)).join('');
     olderWrap.hidden = true;
     toggleBtn.hidden = older.length === 0;
     toggleBtn.textContent = `Show ${older.length} earlier post${older.length === 1 ? '' : 's'}`;

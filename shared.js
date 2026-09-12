@@ -263,6 +263,18 @@ function slugify(str) {
     .replace(/(^-+|-+$)/g, '');
 }
 
+// The slug used in a post's URL. Normally just the title's slug — but
+// if two posts happen to share the exact same title (it happens: a
+// "save the date" post and its recap, both named the same thing), the
+// title alone isn't unique, so the date gets appended to tell them
+// apart. `allPosts` is whatever's currently loaded, so this only
+// kicks in when a real collision exists between them.
+function newsPostSlug(post, allPosts) {
+  const base = slugify(post.Title);
+  const collisions = allPosts.filter(p => slugify(p.Title) === base);
+  return collisions.length > 1 ? `${base}-${slugify(post.Date)}` : base;
+}
+
 // Very small Markdown-like formatter for News post bodies: bold,
 // italic, links, and inline images. Deliberately not a full Markdown
 // parser — just enough that a spreadsheet cell can produce a readable,

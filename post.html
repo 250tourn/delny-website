@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   try {
     const items = await fetchTab(NEWS_TAB, ['Date', 'Title', 'Excerpt']);
-    const post = items.find(p => slugify(p.Title) === slug);
+    const post = items.find(p => newsPostSlug(p, items) === slug);
     if (!post) {
       renderNotFound(root, "Couldn't find that post.");
       return;
