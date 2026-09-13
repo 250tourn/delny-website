@@ -383,16 +383,34 @@ section{padding:64px 0;}
   border-radius:2px;
 }
 
-/* shop — multiple purchase options per piece (e.g. original / print / cards) */
+/* shop — multiple purchase options per piece (e.g. original / print / cards).
+   Each group's price/buy rows start collapsed behind its title, which
+   doubles as a reveal toggle — keeps a piece with several categories
+   from turning into a wall of prices. */
 .shop-options{margin-top:12px;display:flex;flex-direction:column;gap:14px;}
 .option-group-title{
-  display:flex;align-items:center;gap:7px;
+  display:flex;align-items:center;justify-content:space-between;gap:7px;
+  width:100%;
+  background:none;
+  border:none;
+  padding:0;
+  text-align:left;
+  cursor:pointer;
   font-family:'Fraunces', serif;
   font-style:italic;
   font-size:0.9rem;
   color:var(--moss-dark);
   margin-bottom:2px;
 }
+.option-group-label{display:flex;align-items:center;gap:7px;}
+.option-toggle-icon{
+  width:13px;height:13px;flex:0 0 auto;
+  fill:none;stroke:currentColor;stroke-width:1.6;
+  stroke-linecap:round;stroke-linejoin:round;
+  transition:transform 0.2s ease;
+}
+.option-group-title[aria-expanded="true"] .option-toggle-icon{transform:rotate(180deg);}
+.option-rows[hidden]{display:none;}
 .option-row{
   display:flex;
   align-items:center;
