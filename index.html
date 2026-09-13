@@ -311,6 +311,19 @@
   </div>
 </section>
 
+<section id="newsletter" class="gallery-bg reveal">
+  <div class="wrap newsletter-wrap">
+    <span class="eyebrow-plain">Stay in the loop</span>
+    <h2>New work, workshops &amp; news — straight to your inbox.</h2>
+    <p>I'll only send something when there's genuinely new artwork, an upcoming workshop, or news worth sharing — no spam, unsubscribe any time.</p>
+    <form id="newsletter-form" class="newsletter-form">
+      <input type="email" id="newsletter-email" name="email" placeholder="you@example.com" required>
+      <button type="submit" class="btn btn-primary">Subscribe</button>
+    </form>
+    <p class="form-status" id="newsletter-status" aria-live="polite" style="color:#4b4b40;"></p>
+  </div>
+</section>
+
 <div class="contact-bg reveal" id="contact">
   <div class="wrap contact-grid" style="padding:64px 0;">
     <div>
@@ -869,6 +882,87 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (err) {
       status.textContent = 'Something went wrong sending that — please check your connection and try again.';
       status.style.color = '#E3B7A0';
+    } finally {
+      submitBtn.disabled = false;
+    }
+  });
+});
+</script>
+
+<script>
+/* ====================================================================
+   NEWSLETTER SIGNUP, VIA MAILERLITE
+   ---------------------------------------------------------------------
+   Setup (one-time):
+
+   1. Go to https://www.mailerlite.com and sign up for a free account.
+
+   2. Create a Group to hold subscribers from this form — e.g. call it
+      "Website Signups". (You can later manually add contacts from
+      other sources — a past event's sign-up sheet, business cards,
+      etc. — into this same group from your MailerLite dashboard, so
+      everyone ends up on one combined list regardless of how they
+      joined.)
+
+   3. Create a new Form in MailerLite, set to add subscribers to that
+      Group, and choose the plain "Embedded form" option (not the popup
+      or landing-page style) so it can be wired into this page's own
+      look rather than MailerLite's.
+
+   4. MailerLite will show you an embed snippet containing a <form> tag
+      with an "action" URL (and possibly a hidden input or two). Send me
+      that whole snippet and I'll wire the real values in below and
+      test the connection end-to-end — the exact fields MailerLite asks
+      for can vary, so this is easier for me to get right from your
+      actual form than to guess in advance.
+
+   5. Whenever you want to announce something — a new event, a new
+      piece for sale, a news post — write and send a campaign to that
+      Group from MailerLite's own dashboard. That's the "market it"
+      part; nothing on this site needs to change for that.
+
+   Until this is connected, the form shows a message saying so, rather
+   than silently failing.
+   ==================================================================== */
+const MAILERLITE_FORM_ACTION = 'PASTE_YOUR_MAILERLITE_FORM_ACTION_URL_HERE';
+
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('newsletter-form');
+  if (!form) return;
+  const status = document.getElementById('newsletter-status');
+  const submitBtn = form.querySelector('button[type="submit"]');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    if (MAILERLITE_FORM_ACTION === 'PASTE_YOUR_MAILERLITE_FORM_ACTION_URL_HERE') {
+      status.textContent = "This form isn't connected yet — see the comment at the top of this script.";
+      status.style.color = '#8a4a3a';
+      return;
+    }
+
+    submitBtn.disabled = true;
+    status.style.color = '#4b4b40';
+    status.textContent = 'Subscribing…';
+
+    try {
+      const res = await fetch(MAILERLITE_FORM_ACTION, {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        body: new FormData(form)
+      });
+
+      if (res.ok) {
+        form.reset();
+        status.style.color = '#4b4b40';
+        status.textContent = "Thanks — you're on the list!";
+      } else {
+        status.textContent = 'Something went wrong — please try again.';
+        status.style.color = '#8a4a3a';
+      }
+    } catch (err) {
+      status.textContent = 'Something went wrong — please check your connection and try again.';
+      status.style.color = '#8a4a3a';
     } finally {
       submitBtn.disabled = false;
     }

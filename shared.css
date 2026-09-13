@@ -406,6 +406,29 @@ section{padding:64px 0;}
 }
 .option-buy:hover{background:var(--moss-dark);}
 
+/* newsletter */
+.newsletter-wrap{max-width:600px;margin:0 auto;text-align:center;}
+.newsletter-wrap p{color:#4b4b40;margin:10px 0 0;}
+.newsletter-form{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  justify-content:center;
+  margin-top:24px;
+}
+.newsletter-form input[type="email"]{
+  flex:1;
+  min-width:220px;
+  max-width:320px;
+  padding:12px 14px;
+  border:1px solid var(--line);
+  border-radius:2px;
+  font-family:inherit;
+  font-size:0.95rem;
+  background:var(--linen);
+  color:var(--ink);
+}
+
 /* contact */
 .contact-bg{background:var(--moss-dark);color:var(--linen);}
 .contact-grid{display:grid;gap:40px;}
