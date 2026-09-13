@@ -491,6 +491,14 @@ function wireLightbox() {
   // Event delegation: works for gallery thumbnails present now and
   // for any injected later by renderGallery, without rewiring.
   document.addEventListener('click', (e) => {
+    const blurbToggle = e.target.closest('.blurb-toggle');
+    if (blurbToggle) {
+      const expanded = blurbToggle.getAttribute('aria-expanded') === 'true';
+      blurbToggle.setAttribute('aria-expanded', String(!expanded));
+      blurbToggle.textContent = expanded ? 'Read more' : 'Show less';
+      blurbToggle.previousElementSibling.hidden = expanded;
+      return;
+    }
     const trigger = e.target.closest('[data-lightbox]');
     if (trigger) {
       e.preventDefault();
@@ -539,6 +547,29 @@ function parseUkDate(str) {
   return isNaN(named) ? null : named;
 }
 
+// Splits a blurb into its first sentence and whatever comes after, so
+// the card can show just the first sentence with a "Read more" toggle
+// for the rest. Simple punctuation-based heuristic (first ./!/? ), not
+// full sentence parsing — good enough for short hand-written blurbs.
+// If there's no sentence break at all, everything is the "first
+// sentence" and there's nothing to reveal.
+function splitFirstSentence(text) {
+  const t = String(text || '').trim();
+  const m = t.match(/^(.*?[.!?])(\s+([\s\S]*))?$/s);
+  if (!m) return { first: t, rest: '' };
+  return { first: m[1], rest: (m[3] || '').trim() };
+}
+
+function blurbHtml(blurb) {
+  const { first, rest } = splitFirstSentence(blurb);
+  if (!rest) return `<p class="event-blurb">${escapeHtml(first)}</p>`;
+  return `
+    <p class="event-blurb">${escapeHtml(first)}<span class="blurb-rest" hidden> ${escapeHtml(rest)}</span>
+      <button type="button" class="blurb-toggle" aria-expanded="false">Read more</button>
+    </p>
+  `;
+}
+
 function eventCardHtml(ev) {
   const bookingLink = ev.BookingLink || ev['Booking Link'];
   const logoUrl = ev.LogoImage || ev['Logo Image'];
@@ -558,7 +589,7 @@ function eventCardHtml(ev) {
       <div>
         <div class="event-title">${escapeHtml(ev.Title)}</div>
         <div class="event-meta">${metaItems}</div>
-        ${ev.Blurb ? `<p class="event-blurb">${escapeHtml(ev.Blurb)}</p>` : ''}
+        ${ev.Blurb ? blurbHtml(ev.Blurb) : ''}
         ${bookingLink ? `<a href="${escapeHtml(bookingLink)}" class="event-link" target="_blank" rel="noopener">Book now</a>` : ''}
       </div>
       ${logoUrl ? `<img class="event-venue-img" src="${escapeHtml(toImageUrl(logoUrl))}" alt="${escapeHtml(ev.Location || 'Venue')}" loading="lazy">` : ''}
