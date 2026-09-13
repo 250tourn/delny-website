@@ -316,11 +316,9 @@
     <span class="eyebrow-plain">Stay in the loop</span>
     <h2>New work, workshops &amp; news — straight to your inbox.</h2>
     <p>I'll only send something when there's genuinely new artwork, an upcoming workshop, or news worth sharing — no spam, unsubscribe any time.</p>
-    <form id="newsletter-form" class="newsletter-form">
-      <input type="email" id="newsletter-email" name="email" placeholder="you@example.com" required>
-      <button type="submit" class="btn btn-primary">Subscribe</button>
-    </form>
-    <p class="form-status" id="newsletter-status" aria-live="polite" style="color:#4b4b40;"></p>
+    <div class="newsletter-form">
+      <div class="ml-embedded" data-form="CTiuIo"></div>
+    </div>
   </div>
 </section>
 
@@ -889,86 +887,21 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
+<!-- MailerLite Universal — powers the newsletter signup embed further up
+     this page (the div with class="ml-embedded"). This script is what
+     finds that div and turns it into an actual working form; it also
+     doubles as MailerLite's own visitor-tracking script (their
+     "Universal" script family, same idea as Google Analytics or a Meta
+     Pixel), so it's disclosed as a tracking script in the privacy
+     policy — see privacy.html. -->
 <script>
-/* ====================================================================
-   NEWSLETTER SIGNUP, VIA MAILERLITE
-   ---------------------------------------------------------------------
-   Setup (one-time):
-
-   1. Go to https://www.mailerlite.com and sign up for a free account.
-
-   2. Create a Group to hold subscribers from this form — e.g. call it
-      "Website Signups". (You can later manually add contacts from
-      other sources — a past event's sign-up sheet, business cards,
-      etc. — into this same group from your MailerLite dashboard, so
-      everyone ends up on one combined list regardless of how they
-      joined.)
-
-   3. Create a new Form in MailerLite, set to add subscribers to that
-      Group, and choose the plain "Embedded form" option (not the popup
-      or landing-page style) so it can be wired into this page's own
-      look rather than MailerLite's.
-
-   4. MailerLite will show you an embed snippet containing a <form> tag
-      with an "action" URL (and possibly a hidden input or two). Send me
-      that whole snippet and I'll wire the real values in below and
-      test the connection end-to-end — the exact fields MailerLite asks
-      for can vary, so this is easier for me to get right from your
-      actual form than to guess in advance.
-
-   5. Whenever you want to announce something — a new event, a new
-      piece for sale, a news post — write and send a campaign to that
-      Group from MailerLite's own dashboard. That's the "market it"
-      part; nothing on this site needs to change for that.
-
-   Until this is connected, the form shows a message saying so, rather
-   than silently failing.
-   ==================================================================== */
-const MAILERLITE_FORM_ACTION = 'PASTE_YOUR_MAILERLITE_FORM_ACTION_URL_HERE';
-
-document.addEventListener('DOMContentLoaded', () => {
-  const form = document.getElementById('newsletter-form');
-  if (!form) return;
-  const status = document.getElementById('newsletter-status');
-  const submitBtn = form.querySelector('button[type="submit"]');
-
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    if (MAILERLITE_FORM_ACTION === 'PASTE_YOUR_MAILERLITE_FORM_ACTION_URL_HERE') {
-      status.textContent = "This form isn't connected yet — see the comment at the top of this script.";
-      status.style.color = '#8a4a3a';
-      return;
-    }
-
-    submitBtn.disabled = true;
-    status.style.color = '#4b4b40';
-    status.textContent = 'Subscribing…';
-
-    try {
-      const res = await fetch(MAILERLITE_FORM_ACTION, {
-        method: 'POST',
-        headers: { 'Accept': 'application/json' },
-        body: new FormData(form)
-      });
-
-      if (res.ok) {
-        form.reset();
-        status.style.color = '#4b4b40';
-        status.textContent = "Thanks — you're on the list!";
-      } else {
-        status.textContent = 'Something went wrong — please try again.';
-        status.style.color = '#8a4a3a';
-      }
-    } catch (err) {
-      status.textContent = 'Something went wrong — please check your connection and try again.';
-      status.style.color = '#8a4a3a';
-    } finally {
-      submitBtn.disabled = false;
-    }
-  });
-});
+    (function(w,d,e,u,f,l,n){w[f]=w[f]||function(){(w[f].q=w[f].q||[])
+    .push(arguments);},l=d.createElement(e),l.async=1,l.src=u,
+    n=d.getElementsByTagName(e)[0],n.parentNode.insertBefore(l,n);})
+    (window,document,'script','https://assets.mailerlite.com/js/universal.js','ml');
+    ml('account', '2632419');
 </script>
+<!-- End MailerLite Universal -->
 
 </body>
 </html>
