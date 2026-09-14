@@ -226,7 +226,10 @@
     </div>
     <div class="shop-grid">
       <div class="shop-card">
-        <div class="thumb"><img src="https://placehold.co/300x225/8A9A7A/F6F2E9?text=Corbet+Wood"></div>
+        <div class="thumb">
+          <img class="thumb-bg" src="https://placehold.co/300x225/8A9A7A/F6F2E9?text=Corbet+Wood" alt="" aria-hidden="true">
+          <img class="thumb-fg" src="https://placehold.co/300x225/8A9A7A/F6F2E9?text=Corbet+Wood" alt="">
+        </div>
         <h3>Corbet Wood View</h3>
         <div class="dimensions">30 x 40cm (original)</div>
         <p class="description">An original mixed media piece inspired by Corbet Wood.</p>
@@ -264,13 +267,19 @@
         </div>
       </div>
       <div class="shop-card">
-        <div class="thumb"><img src="https://placehold.co/300x225/B98A2E/2B2B24?text=Wrekin+Autumn"></div>
+        <div class="thumb">
+          <img class="thumb-bg" src="https://placehold.co/300x225/B98A2E/2B2B24?text=Wrekin+Autumn" alt="" aria-hidden="true">
+          <img class="thumb-fg" src="https://placehold.co/300x225/B98A2E/2B2B24?text=Wrekin+Autumn" alt="">
+        </div>
         <h3>Wrekin View in Autumn</h3>
         <div class="price">£15.00</div>
         <a href="#" class="buy-btn">Buy with PayPal</a>
       </div>
       <div class="shop-card">
-        <div class="thumb"><img src="https://placehold.co/300x225/7A4B5C/F6F2E9?text=Long+Mynd"></div>
+        <div class="thumb">
+          <img class="thumb-bg" src="https://placehold.co/300x225/7A4B5C/F6F2E9?text=Long+Mynd" alt="" aria-hidden="true">
+          <img class="thumb-fg" src="https://placehold.co/300x225/7A4B5C/F6F2E9?text=Long+Mynd" alt="">
+        </div>
         <h3>Long Mynd Autumn View</h3>
         <div class="price">£25.00</div>
         <a href="#" class="buy-btn">Buy with PayPal</a>
@@ -749,7 +758,10 @@ function renderShop(items) {
       `;
     return `
     <div class="shop-card">
-      <div class="thumb"><img src="${escapeHtml(toImageUrl(item.ImageURL))}" alt="${escapeHtml(item.Title)}" loading="lazy"></div>
+      <div class="thumb">
+        <img class="thumb-bg" src="${escapeHtml(toImageUrl(item.ImageURL))}" alt="" aria-hidden="true">
+        <img class="thumb-fg" src="${escapeHtml(toImageUrl(item.ImageURL))}" alt="${escapeHtml(item.Title)}" loading="lazy">
+      </div>
       <h3>${escapeHtml(item.Title)}</h3>
       ${item.Dimensions ? `<div class="dimensions">${escapeHtml(item.Dimensions)}</div>` : ''}
       ${item.Description ? `<p class="description">${escapeHtml(item.Description)}</p>` : ''}

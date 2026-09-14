@@ -367,13 +367,32 @@ section{padding:64px 0;}
 /* shop */
 .shop-grid{display:grid;gap:24px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));}
 .shop-card{background:var(--linen-deep);padding:18px;border-radius:2px;}
-/* No fixed aspect-ratio box here on purpose — the thumb just takes
-   whatever shape its own image naturally is (full width, natural
-   height), so a square card photo displays as a clean square and a
-   landscape painting as a landscape, with nothing ever cropped or
-   padded out with empty space. */
-.shop-card .thumb{border-radius:2px;margin-bottom:14px;overflow:hidden;background:var(--linen);}
-.shop-card .thumb img{width:100%;height:auto;display:block;}
+/* Every thumb is the same fixed-height box, so a row of cards lines
+   up neatly regardless of each photo's own shape — but nothing is
+   ever cropped to force-fit it. The full, uncropped photo (thumb-fg)
+   sits centred via object-fit:contain; any leftover space around it
+   (e.g. either side of a square card photo) is filled by a second,
+   blurred, oversized copy of the same photo behind it (thumb-bg)
+   rather than flat empty colour — reads as an intentional frame,
+   not a gap. */
+.shop-card .thumb{position:relative;aspect-ratio:4/3;border-radius:2px;margin-bottom:14px;overflow:hidden;background:var(--linen);}
+.shop-card .thumb-bg{
+  position:absolute;
+  inset:-14px;
+  width:calc(100% + 28px);
+  height:calc(100% + 28px);
+  object-fit:cover;
+  filter:blur(18px) brightness(0.92);
+  transform:scale(1.08);
+}
+.shop-card .thumb-fg{
+  position:relative;
+  z-index:1;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  display:block;
+}
 .shop-card h3{font-size:1.05rem;margin-bottom:4px;}
 .shop-card .dimensions{font-size:0.8rem;color:#6a6a5c;margin-bottom:8px;}
 .shop-card .description{font-size:0.88rem;color:#4b4b40;margin:0 0 12px 0;}
