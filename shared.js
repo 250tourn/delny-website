@@ -249,8 +249,18 @@ function safeUrl(url) {
 // for roughly twice the pixel width the image is actually displayed at
 // (crisp on high-density phones) rather than always fetching 1200px —
 // a gallery thumbnail doesn't need a megabyte of photo.
-function toImageUrl(url, width) {
+//
+// `photo` = true also asks Google to re-encode the image as a JPEG at
+// quality 82 (the "-rj-l82" suffix). Without it, Google serves the
+// image in whatever format was uploaded, and a PNG artwork scan comes
+// back at 1-2 MB even when resized; as a JPEG it's about a tenth of
+// that with no visible difference. Don't use it for logos or anything
+// that needs a transparent background — JPEG can't do transparency.
+// This is what keeps images added to the Sheet in future (news posts,
+// gallery pieces) light, whatever size or format they were uploaded in.
+function toImageUrl(url, width, photo) {
   width = width || 1200;
+  const suffix = photo ? '-rj-l82' : '';
   url = String(url || '').trim();
   const patterns = [
     /drive\.google\.com\/file\/d\/([\w-]+)/,   // .../file/d/FILE_ID/view
@@ -259,7 +269,7 @@ function toImageUrl(url, width) {
   ];
   for (const re of patterns) {
     const m = url.match(re);
-    if (m) return `https://lh3.googleusercontent.com/d/${m[1]}=w${width}`;
+    if (m) return `https://lh3.googleusercontent.com/d/${m[1]}=w${width}${suffix}`;
   }
   return url;
 }
@@ -323,7 +333,7 @@ function renderBodyHtml(body) {
     const imgMatch = trimmed.match(/^!\[([^\]]*)\]\(([^)]+)\)$/);
     if (imgMatch) {
       const alt = escapeHtml(imgMatch[1]);
-      const src = escapeHtml(toImageUrl(imgMatch[2]));
+      const src = escapeHtml(toImageUrl(imgMatch[2], 1200, true));
       return `<figure class="post-image"><img src="${src}" alt="${alt}" loading="lazy"></figure>`;
     }
     const withBreaks = trimmed.split('\n').map(renderInline).join('<br>');

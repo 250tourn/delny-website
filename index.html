@@ -90,7 +90,7 @@
 
 <section id="about" class="reveal">
   <div class="wrap about-grid">
-    <img src="https://lh3.googleusercontent.com/d/1VhbnzLBuIXxuMlL-cVqFfvsJ6RtRI_B_=w1200" alt="Delny at work">
+    <img src="https://lh3.googleusercontent.com/d/1VhbnzLBuIXxuMlL-cVqFfvsJ6RtRI_B_=w1200-rj-l82" alt="Delny at work">
     <div class="about-text">
       <span class="eyebrow-plain">About</span>
       <h2>Landscapes, wildflowers, and the odd Cambodian temple</h2>
@@ -164,8 +164,8 @@
       <p>Over the years, I have learned that my strengths lie in my creativity and an ability to make art accessible to anyone, anywhere – regardless of capability, circumstance, or environment. I am passionate about art, particularly mixed media, and believe wholeheartedly that the act of creating and making can make people feel better, build confidence, and improve mental health.</p>
     </div>
     <div class="teaching-photos">
-      <figure class="photo-a"><img src="https://lh3.googleusercontent.com/d/1ECT77M3Dz93BhXFvCK7eLD4ZlykrnAMx=w1000" alt="Delny teaching a workshop"></figure>
-      <figure class="photo-b"><img src="https://lh3.googleusercontent.com/d/19YUVKjxfts3k8allMdH8sF5SA_fYZc-X=w1000" alt="Workshop artwork in progress"></figure>
+      <figure class="photo-a"><img src="https://lh3.googleusercontent.com/d/1ECT77M3Dz93BhXFvCK7eLD4ZlykrnAMx=w1000-rj-l82" alt="Delny teaching a workshop"></figure>
+      <figure class="photo-b"><img src="https://lh3.googleusercontent.com/d/19YUVKjxfts3k8allMdH8sF5SA_fYZc-X=w1000-rj-l82" alt="Workshop artwork in progress"></figure>
     </div>
   </div>
 </section>
@@ -237,8 +237,8 @@
       <a href="#contact" class="btn btn-primary" style="margin-top:12px;">Enquire about a commission</a>
     </div>
     <div class="teaching-photos">
-      <figure class="photo-a"><img src="https://lh3.googleusercontent.com/d/1uaTo7_L-D4SRZh6S9-Q4d7pOc_n18Nhh=w1000" alt="A commissioned mixed media piece"></figure>
-      <figure class="photo-b"><img src="https://lh3.googleusercontent.com/d/1BgbHfH4Ppra8lFtesJAtGezlVSGqnyl3=w1000" alt="Detail of a commissioned mixed media piece"></figure>
+      <figure class="photo-a"><img src="https://lh3.googleusercontent.com/d/1uaTo7_L-D4SRZh6S9-Q4d7pOc_n18Nhh=w1000-rj-l82" alt="A commissioned mixed media piece"></figure>
+      <figure class="photo-b"><img src="https://lh3.googleusercontent.com/d/1BgbHfH4Ppra8lFtesJAtGezlVSGqnyl3=w1000-rj-l82" alt="Detail of a commissioned mixed media piece"></figure>
     </div>
   </div>
 </section>
@@ -490,7 +490,7 @@ function renderGallery(items) {
         : `href="#" data-lightbox="true"`;
       return `
       <a ${attrs}>
-        <figure><img src="${escapeHtml(toImageUrl(item.ImageURL, 320))}" data-full="${escapeHtml(toImageUrl(item.ImageURL, 1600))}" alt="${escapeHtml(item.Title)}" loading="lazy"></figure>
+        <figure><img src="${escapeHtml(toImageUrl(item.ImageURL, 320, true))}" data-full="${escapeHtml(toImageUrl(item.ImageURL, 1600, true))}" alt="${escapeHtml(item.Title)}" loading="lazy"></figure>
       </a>
     `;
     }).join('');
@@ -806,8 +806,8 @@ function renderShop(items) {
     return `
     <div class="shop-card">
       <div class="thumb">
-        <img class="thumb-bg" src="${escapeHtml(toImageUrl(item.ImageURL, 60))}" alt="" aria-hidden="true">
-        <img class="thumb-fg" src="${escapeHtml(toImageUrl(item.ImageURL, 700))}" alt="${escapeHtml(item.Title)}" loading="lazy">
+        <img class="thumb-bg" src="${escapeHtml(toImageUrl(item.ImageURL, 60, true))}" alt="" aria-hidden="true">
+        <img class="thumb-fg" src="${escapeHtml(toImageUrl(item.ImageURL, 700, true))}" alt="${escapeHtml(item.Title)}" loading="lazy">
       </div>
       <h3>${escapeHtml(item.Title)}</h3>
       ${item.Dimensions ? `<div class="dimensions">${escapeHtml(item.Dimensions)}</div>` : ''}
@@ -823,7 +823,7 @@ let newsOlderCount = 0;
 function newsCardHtml(post, allPosts) {
   const href = `post.html?slug=${encodeURIComponent(newsPostSlug(post, allPosts))}`;
   const thumb = post.CoverImageURL
-    ? `<div class="thumb"><img src="${escapeHtml(toImageUrl(post.CoverImageURL, 700))}" alt="${escapeHtml(post.Title)}" loading="lazy"></div>`
+    ? `<div class="thumb"><img src="${escapeHtml(toImageUrl(post.CoverImageURL, 700, true))}" alt="${escapeHtml(post.Title)}" loading="lazy"></div>`
     : '';
   return `
     <a class="news-card" href="${href}">

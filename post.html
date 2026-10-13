@@ -90,12 +90,12 @@ function renderPost(post) {
   }
   const root = document.getElementById('post-root');
   const cover = post.CoverImageURL
-    ? `<img class="post-hero-img" src="${escapeHtml(toImageUrl(post.CoverImageURL))}" alt="${escapeHtml(post.Title)}">`
+    ? `<img class="post-hero-img" src="${escapeHtml(toImageUrl(post.CoverImageURL, 1200, true))}" alt="${escapeHtml(post.Title)}">`
     : '';
   const extraImages = parseImageList(post['Additional Images']);
   const gallery = extraImages.length
     ? `<div class="post-gallery">${extraImages.map(url => `
-        <figure><img src="${escapeHtml(toImageUrl(url))}" alt="${escapeHtml(post.Title)}" loading="lazy"></figure>
+        <figure><img src="${escapeHtml(toImageUrl(url, 1000, true))}" alt="${escapeHtml(post.Title)}" loading="lazy"></figure>
       `).join('')}</div>`
     : '';
   root.innerHTML = `
