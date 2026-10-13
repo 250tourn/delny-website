@@ -81,6 +81,24 @@ header.nav-open .nav-toggle span:nth-child(3){transform:translateY(-7px) rotate(
 .hp-field{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;}
 
 .header-right{display:flex;align-items:center;gap:24px;}
+/* "Skip to content" — invisible until a keyboard user tabs to it */
+.skip-link{
+  position:absolute;left:12px;top:-64px;z-index:100;
+  background:var(--moss);color:var(--linen);
+  padding:10px 16px;border-radius:2px;text-decoration:none;
+  transition:top .15s ease;
+}
+.skip-link:focus{top:12px;}
+
+/* Small controls get a larger invisible touch area (about 44px, the
+   usual comfortable minimum for a thumb) without changing how they
+   look: the pseudo-element extends the clickable box past the visible
+   one. */
+.social-links a,.gallery-arrow,.blurb-toggle,.event-link,.news-card .read-more,.testimonial-dot{position:relative;}
+.social-links a::after,.gallery-arrow::after{content:"";position:absolute;inset:-10px;}
+.blurb-toggle::after,.event-link::after,.news-card .read-more::after{content:"";position:absolute;inset:-12px -8px;}
+.testimonial-dot::after{content:"";position:absolute;inset:-9px;}
+
 .social-links{display:flex;gap:16px;}
 .social-links a{display:flex;}
 .social-links a:hover{color:var(--berry);}
@@ -280,7 +298,7 @@ section{padding:64px 0;}
   line-height:1.5;
 }
 .testimonial-slide cite{font-style:normal;color:#C9D2BE;font-size:0.9rem;}
-.testimonial-dots{display:flex;justify-content:center;gap:9px;margin-top:32px;}
+.testimonial-dots{display:flex;justify-content:center;gap:14px;margin-top:32px;}
 .testimonial-dot{
   width:8px;height:8px;padding:0;border-radius:50%;
   background:rgba(255,255,255,0.3);border:none;cursor:pointer;
