@@ -542,6 +542,8 @@ section{padding:64px 0;}
   max-width:420px;
   margin:24px auto 0;
 }
+.newsletter-form [hidden]{display:none;}
+.newsletter-wrap .newsletter-note{font-size:0.82rem;color:#6a6a5c;margin:14px 0 0;}
 
 /* contact */
 .contact-bg{background:var(--moss-dark);color:var(--linen);}

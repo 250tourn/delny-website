@@ -391,7 +391,15 @@
     <h2>New work, workshops &amp; news — straight to your inbox</h2>
     <p>I'll only send something when there's genuinely new artwork, an upcoming workshop, or news worth sharing — no spam, unsubscribe any time.</p>
     <div class="newsletter-form">
-      <div class="ml-embedded" data-form="CTiuIo"></div>
+      <!-- Nothing from MailerLite is loaded until the visitor clicks this
+           button (see the script at the end of the page) — so just
+           visiting the site stores nothing about them with MailerLite. -->
+      <button type="button" id="newsletter-open" class="btn btn-primary" style="border:none;cursor:pointer;" aria-controls="newsletter-embed" aria-expanded="false">Sign up for the newsletter</button>
+      <p class="newsletter-note" id="newsletter-note">The sign-up form is provided by MailerLite, which stores a small identifier in your browser once the form is opened. See the <a href="privacy.html" style="text-decoration:underline;">privacy policy</a>.</p>
+      <div id="newsletter-embed" hidden>
+        <div class="ml-embedded" data-form="CTiuIo"></div>
+      </div>
+      <noscript><p class="newsletter-note"><a href="https://delny-fitrzyk-ctoxic.subscribepage.io" style="text-decoration:underline;">Sign up for the newsletter here</a></p></noscript>
     </div>
   </div>
 </section>
@@ -1053,21 +1061,50 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
-<!-- MailerLite Universal — powers the newsletter signup embed further up
-     this page (the div with class="ml-embedded"). This script is what
-     finds that div and turns it into an actual working form; it also
-     doubles as MailerLite's own visitor-tracking script (their
-     "Universal" script family, same idea as Google Analytics or a Meta
-     Pixel), so it's disclosed as a tracking script in the privacy
-     policy — see privacy.html. -->
+<!-- MailerLite Universal — powers the newsletter signup form (the div with
+     class="ml-embedded" in the Newsletter section). It finds that div and
+     turns it into a working form; it also doubles as MailerLite's own
+     visitor-tracking script and stores an identifier (ml_guid) in the
+     browser, which is why it is NOT loaded with the page. It only loads
+     when a visitor clicks "Sign up for the newsletter", so people who
+     never open the form have nothing stored. Disclosed in privacy.html.
+     The loader below is MailerLite's own snippet, unchanged, just wrapped
+     so it runs on that click instead of on page load. -->
 <script>
+(function () {
+  const btn = document.getElementById('newsletter-open');
+  const embed = document.getElementById('newsletter-embed');
+  const note = document.getElementById('newsletter-note');
+  if (!btn || !embed) return;
+
+  let loaded = false;
+  function loadMailerLite() {
+    if (loaded) return;
+    loaded = true;
     (function(w,d,e,u,f,l,n){w[f]=w[f]||function(){(w[f].q=w[f].q||[])
     .push(arguments);},l=d.createElement(e),l.async=1,l.src=u,
     n=d.getElementsByTagName(e)[0],n.parentNode.insertBefore(l,n);})
     (window,document,'script','https://assets.mailerlite.com/js/universal.js','ml');
     ml('account', '2632419');
+  }
+
+  btn.addEventListener('click', () => {
+    embed.hidden = false;
+    btn.hidden = true;
+    btn.setAttribute('aria-expanded', 'true');
+    if (note) note.textContent = 'Loading the sign-up form…';
+    loadMailerLite();
+    // once MailerLite has drawn the form, put the privacy note back
+    const timer = setInterval(() => {
+      if (embed.querySelector('input, form')) {
+        clearInterval(timer);
+        if (note) note.innerHTML = 'The sign-up form is provided by MailerLite. See the <a href="privacy.html" style="text-decoration:underline;">privacy policy</a>.';
+      }
+    }, 300);
+    setTimeout(() => clearInterval(timer), 15000);
+  });
+})();
 </script>
-<!-- End MailerLite Universal -->
 
 </body>
 </html>
