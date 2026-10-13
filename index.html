@@ -401,6 +401,13 @@
       <input id="cf-email" name="email" type="email" placeholder="you@example.com" required>
       <label for="cf-message">Message</label>
       <textarea id="cf-message" name="message" rows="4" placeholder="Tell me a bit about what you're after..." required></textarea>
+      <!-- Spam trap: hidden from people, but bots filling in every field
+           will fill this one too, and Formspree (and the handler below)
+           then discard the message. -->
+      <div class="hp-field" aria-hidden="true">
+        <label for="cf-website">Leave this field empty</label>
+        <input id="cf-website" name="_gotcha" type="text" tabindex="-1" autocomplete="off">
+      </div>
       <button type="submit" class="btn btn-primary" style="border:none;cursor:pointer;">Send message</button>
       <p class="form-status" aria-live="polite"></p>
     </form>
@@ -466,9 +473,9 @@ function renderGallery(items) {
       // lightbox instead of falling through to its Google Drive page.
       // An explicit Link (e.g. to an Instagram post) is still honored
       // and opens normally in a new tab.
-      const hasLink = !!item.Link;
+      const hasLink = !!safeUrl(item.Link);
       const attrs = hasLink
-        ? `href="${escapeHtml(item.Link)}" target="_blank" rel="noopener"`
+        ? `href="${escapeHtml(safeUrl(item.Link))}" target="_blank" rel="noopener"`
         : `href="#" data-lightbox="true"`;
       return `
       <a ${attrs}>
@@ -630,7 +637,7 @@ function blurbHtml(blurb) {
 function eventCardHtml(ev, isPast) {
   // A past event can't be booked, so it gets no "Book now" link — just
   // a quiet "Past event" tag and a softer look (see .is-past in the CSS).
-  const bookingLink = isPast ? '' : (ev.BookingLink || ev['Booking Link']);
+  const bookingLink = isPast ? '' : safeUrl(ev.BookingLink || ev['Booking Link']);
   const logoUrl = ev.LogoImage || ev['Logo Image'];
   // A real venue logo replaces the generic pin icon when one's given;
   // otherwise the pin icon carries on as before.
@@ -764,7 +771,7 @@ function renderShopOptions(options) {
           <div class="option-row">
             <span class="option-variant">${escapeHtml(opt.variant)}</span>
             <span class="option-price">${escapeHtml(opt.price)}</span>
-            ${opt.buyLink ? `<a href="${escapeHtml(opt.buyLink)}" class="option-buy" target="_blank" rel="noopener">Buy</a>` : ''}
+            ${safeUrl(opt.buyLink) ? `<a href="${escapeHtml(safeUrl(opt.buyLink))}" class="option-buy" target="_blank" rel="noopener">Buy</a>` : ''}
           </div>
         `).join('')}
       </div>
@@ -783,7 +790,7 @@ function renderShop(items) {
       ? renderShopOptions(options)
       : `
         <div class="price">${escapeHtml(item.Price)}</div>
-        ${item.BuyLink ? `<a href="${escapeHtml(item.BuyLink)}" class="buy-btn" target="_blank" rel="noopener">Buy now</a>` : ''}
+        ${safeUrl(item.BuyLink) ? `<a href="${escapeHtml(safeUrl(item.BuyLink))}" class="buy-btn" target="_blank" rel="noopener">Buy now</a>` : ''}
       `;
     return `
     <div class="shop-card">
@@ -993,6 +1000,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (CONTACT_FORM_ID === 'PASTE_YOUR_FORMSPREE_FORM_ID_HERE') {
       status.textContent = "This form isn't connected yet — see the comment at the top of this script.";
       status.style.color = '#E3B7A0';
+      return;
+    }
+
+    // A person never sees the hidden trap field, so if it has a value a
+    // bot filled it in: say thanks and send nothing.
+    if (form.elements['_gotcha'] && form.elements['_gotcha'].value) {
+      form.reset();
+      status.style.color = '#DCE3D2';
+      status.textContent = "Thanks — your message is on its way. I'll get back to you soon.";
       return;
     }
 

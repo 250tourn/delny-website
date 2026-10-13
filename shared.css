@@ -76,6 +76,10 @@ header.nav-open .nav-toggle span:nth-child(3){transform:translateY(-7px) rotate(
 }
 @media(min-width:820px){.nav-toggle{display:none;}}
 
+/* contact-form spam trap: off-screen rather than display:none, which
+   bots are more likely to recognise and skip */
+.hp-field{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;}
+
 .header-right{display:flex;align-items:center;gap:24px;}
 .social-links{display:flex;gap:16px;}
 .social-links a{display:flex;}

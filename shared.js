@@ -225,6 +225,21 @@ function escapeHtml(str) {
   }[c]));
 }
 
+// Link values come from the Google Sheet, so anyone who can edit it
+// controls them. A link whose scheme isn't one we expect — most
+// importantly `javascript:` — would run script when clicked, so only
+// web, mail and phone links (and ordinary relative ones) are allowed;
+// anything else comes back as '' and callers leave the link out.
+// Whitespace/control characters are stripped first because browsers
+// ignore them inside a scheme ("java<tab>script:" still runs).
+function safeUrl(url) {
+  const cleaned = String(url || '').replace(/[\u0000- \u007f-\u009f]+/g, '');
+  if (!cleaned) return '';
+  if (/^(https?:|mailto:|tel:)/i.test(cleaned)) return cleaned;
+  if (/^[a-z][a-z0-9+.\-]*:/i.test(cleaned)) return '';
+  return cleaned;
+}
+
 // Turns an ordinary Google Drive share link (whatever form Drive's
 // "Copy link" button produces) into a URL that actually works as an
 // <img src>. Anything that isn't a recognizable Drive link — e.g. an
@@ -287,8 +302,15 @@ function newsPostSlug(post, allPosts) {
 // nicely formatted post.
 function renderInline(text) {
   let html = escapeHtml(text);
-  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (m, label, url) =>
-    `<a href="${escapeHtml(url)}" target="_blank" rel="noopener">${label}</a>`);
+  // `html` is already escaped here, so the link target is used as-is
+  // (escaping it a second time would mangle any & in the URL). A link
+  // with an unsafe scheme is shown as plain text rather than a link.
+  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (m, label, url) => {
+    const href = safeUrl(url);
+    return href
+      ? `<a href="${href}" target="_blank" rel="noopener">${label}</a>`
+      : label;
+  });
   html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
   html = html.replace(/\*([^*]+)\*/g, '<em>$1</em>');
   return html;
