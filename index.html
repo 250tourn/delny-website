@@ -4,6 +4,30 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Delny Fitrzyk — Mixed Media Textile Artist & Art Teacher</title>
+<meta name="description" content="Shropshire-based mixed media textile artist combining inks, paints and free machine embroidery. Workshops, talks, exhibitions, bespoke commissions, prints and cards.">
+<link rel="canonical" href="https://delny.org/">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#3F4B36">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Delny Fitrzyk">
+<meta property="og:title" content="Delny Fitrzyk — Mixed Media Textile Artist & Art Teacher">
+<meta property="og:description" content="Shropshire-based mixed media textile artist combining inks, paints and free machine embroidery. Workshops, talks, exhibitions and bespoke commissions.">
+<meta property="og:url" content="https://delny.org/">
+<meta property="og:image" content="https://lh3.googleusercontent.com/d/1t58tdUTsbZOy5jJSNsnALin8qFEDSBko=w1200">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Delny Fitrzyk",
+  "url": "https://delny.org/",
+  "jobTitle": "Mixed media textile artist and art teacher",
+  "description": "Shropshire-based mixed media textile artist combining inks, paints and free machine embroidery.",
+  "address": { "@type": "PostalAddress", "addressRegion": "Shropshire", "addressCountry": "GB" },
+  "knowsAbout": ["mixed media textile art", "free machine embroidery", "art workshops", "art commissions"],
+  "sameAs": ["https://www.instagram.com/delnyfitrzyk/", "https://www.facebook.com/delnyfitrzyk"]
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,500;1,9..144,600&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="shared.css">
@@ -448,7 +472,7 @@ function renderGallery(items) {
         : `href="#" data-lightbox="true"`;
       return `
       <a ${attrs}>
-        <figure><img src="${escapeHtml(toImageUrl(item.ImageURL))}" alt="${escapeHtml(item.Title)}" loading="lazy"></figure>
+        <figure><img src="${escapeHtml(toImageUrl(item.ImageURL, 320))}" data-full="${escapeHtml(toImageUrl(item.ImageURL, 1600))}" alt="${escapeHtml(item.Title)}" loading="lazy"></figure>
       </a>
     `;
     }).join('');
@@ -538,7 +562,8 @@ function wireLightbox() {
       const triggers = strip ? [...strip.querySelectorAll('a[data-lightbox]')] : [trigger];
       const images = triggers.map(a => {
         const img = a.querySelector('img');
-        return { src: img.src, alt: img.alt };
+        // Thumbnails are small; the lightbox loads the large version.
+        return { src: img.dataset.full || img.src, alt: img.alt };
       });
       openLightbox(images, triggers.indexOf(trigger));
       return;
@@ -610,7 +635,7 @@ function eventCardHtml(ev, isPast) {
   // A real venue logo replaces the generic pin icon when one's given;
   // otherwise the pin icon carries on as before.
   const locationIcon = logoUrl
-    ? `<img class="venue-logo" src="${escapeHtml(toImageUrl(logoUrl))}" alt="${escapeHtml(ev.Location || 'Venue')} logo" loading="lazy">`
+    ? `<img class="venue-logo" src="${escapeHtml(toImageUrl(logoUrl, 120))}" alt="${escapeHtml(ev.Location || 'Venue')} logo" loading="lazy">`
     : ICON_PIN;
   const metaItems = [
     ev.Location ? `<span class="meta-item">${locationIcon}${escapeHtml(ev.Location)}</span>` : '',
@@ -627,7 +652,7 @@ function eventCardHtml(ev, isPast) {
         ${ev.Blurb ? blurbHtml(ev.Blurb) : ''}
         ${bookingLink ? `<a href="${escapeHtml(bookingLink)}" class="event-link" target="_blank" rel="noopener">Book now</a>` : ''}
       </div>
-      ${logoUrl ? `<img class="event-venue-img" src="${escapeHtml(toImageUrl(logoUrl))}" alt="${escapeHtml(ev.Location || 'Venue')}" loading="lazy">` : ''}
+      ${logoUrl ? `<img class="event-venue-img" src="${escapeHtml(toImageUrl(logoUrl, 600))}" alt="${escapeHtml(ev.Location || 'Venue')}" loading="lazy">` : ''}
     </div>
   `;
 }
@@ -763,8 +788,8 @@ function renderShop(items) {
     return `
     <div class="shop-card">
       <div class="thumb">
-        <img class="thumb-bg" src="${escapeHtml(toImageUrl(item.ImageURL))}" alt="" aria-hidden="true">
-        <img class="thumb-fg" src="${escapeHtml(toImageUrl(item.ImageURL))}" alt="${escapeHtml(item.Title)}" loading="lazy">
+        <img class="thumb-bg" src="${escapeHtml(toImageUrl(item.ImageURL, 60))}" alt="" aria-hidden="true">
+        <img class="thumb-fg" src="${escapeHtml(toImageUrl(item.ImageURL, 700))}" alt="${escapeHtml(item.Title)}" loading="lazy">
       </div>
       <h3>${escapeHtml(item.Title)}</h3>
       ${item.Dimensions ? `<div class="dimensions">${escapeHtml(item.Dimensions)}</div>` : ''}
@@ -780,7 +805,7 @@ let newsOlderCount = 0;
 function newsCardHtml(post, allPosts) {
   const href = `post.html?slug=${encodeURIComponent(newsPostSlug(post, allPosts))}`;
   const thumb = post.CoverImageURL
-    ? `<div class="thumb"><img src="${escapeHtml(toImageUrl(post.CoverImageURL))}" alt="${escapeHtml(post.Title)}" loading="lazy"></div>`
+    ? `<div class="thumb"><img src="${escapeHtml(toImageUrl(post.CoverImageURL, 700))}" alt="${escapeHtml(post.Title)}" loading="lazy"></div>`
     : '';
   return `
     <a class="news-card" href="${href}">

@@ -4,6 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title id="page-title">News — Delny Fitrzyk</title>
+<meta name="description" content="News and updates from Delny Fitrzyk, Shropshire mixed media textile artist and art teacher.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#3F4B36">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Delny Fitrzyk">
+<meta property="og:title" content="News — Delny Fitrzyk">
+<meta property="og:description" content="News and updates from Delny Fitrzyk, Shropshire mixed media textile artist and art teacher.">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,500;1,9..144,600&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="shared.css">
@@ -55,8 +63,27 @@ function renderNotFound(root, message) {
   `;
 }
 
+// Updates the tab title and the description / share-preview tags to
+// match the post being shown, so a shared link or a search result
+// describes the post rather than the generic News page.
+function setMeta(selector, value) {
+  const el = document.querySelector(selector);
+  if (el) el.setAttribute('content', value);
+}
+
 function renderPost(post) {
-  document.getElementById('page-title').textContent = `${post.Title} — Delny Fitrzyk`;
+  const pageTitle = `${post.Title} — Delny Fitrzyk`;
+  document.getElementById('page-title').textContent = pageTitle;
+  const summary = (post.Excerpt || '').trim() || 'News and updates from Delny Fitrzyk.';
+  setMeta('meta[name="description"]', summary);
+  setMeta('meta[property="og:title"]', pageTitle);
+  setMeta('meta[property="og:description"]', summary);
+  if (post.CoverImageURL) {
+    const og = document.createElement('meta');
+    og.setAttribute('property', 'og:image');
+    og.setAttribute('content', toImageUrl(post.CoverImageURL, 1200));
+    document.head.appendChild(og);
+  }
   const root = document.getElementById('post-root');
   const cover = post.CoverImageURL
     ? `<img class="post-hero-img" src="${escapeHtml(toImageUrl(post.CoverImageURL))}" alt="${escapeHtml(post.Title)}">`

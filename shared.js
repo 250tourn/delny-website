@@ -229,7 +229,13 @@ function escapeHtml(str) {
 // "Copy link" button produces) into a URL that actually works as an
 // <img src>. Anything that isn't a recognizable Drive link — e.g. an
 // Imgur or other direct image URL — is passed through unchanged.
-function toImageUrl(url) {
+//
+// `width` is the size Google serves the image at. Callers should ask
+// for roughly twice the pixel width the image is actually displayed at
+// (crisp on high-density phones) rather than always fetching 1200px —
+// a gallery thumbnail doesn't need a megabyte of photo.
+function toImageUrl(url, width) {
+  width = width || 1200;
   url = String(url || '').trim();
   const patterns = [
     /drive\.google\.com\/file\/d\/([\w-]+)/,   // .../file/d/FILE_ID/view
@@ -238,7 +244,7 @@ function toImageUrl(url) {
   ];
   for (const re of patterns) {
     const m = url.match(re);
-    if (m) return `https://lh3.googleusercontent.com/d/${m[1]}=w1200`;
+    if (m) return `https://lh3.googleusercontent.com/d/${m[1]}=w${width}`;
   }
   return url;
 }
@@ -325,3 +331,31 @@ function initScrollReveal() {
   targets.forEach(el => observer.observe(el));
 }
 document.addEventListener('DOMContentLoaded', initScrollReveal);
+
+// Below 820px the header's nav links are hidden (they don't fit), so
+// this adds a menu button that opens them as a dropdown. Built here,
+// not in each page's HTML, so every page that has a <header><nav>
+// gets it automatically. The button is hidden on wide screens by CSS.
+function initMobileNav() {
+  const header = document.querySelector('header');
+  const nav = header && header.querySelector('nav');
+  if (!nav) return;
+  nav.id = nav.id || 'site-nav';
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'nav-toggle';
+  btn.setAttribute('aria-label', 'Menu');
+  btn.setAttribute('aria-expanded', 'false');
+  btn.setAttribute('aria-controls', nav.id);
+  btn.innerHTML = '<span></span><span></span><span></span>';
+  nav.parentElement.appendChild(btn);
+
+  const setOpen = open => {
+    header.classList.toggle('nav-open', open);
+    btn.setAttribute('aria-expanded', String(open));
+  };
+  btn.addEventListener('click', () => setOpen(!header.classList.contains('nav-open')));
+  nav.addEventListener('click', e => { if (e.target.closest('a')) setOpen(false); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') setOpen(false); });
+}
+document.addEventListener('DOMContentLoaded', initMobileNav);
