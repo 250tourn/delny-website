@@ -364,7 +364,7 @@ function initScrollReveal() {
 }
 document.addEventListener('DOMContentLoaded', initScrollReveal);
 
-// Below 820px the header's nav links are hidden (they don't fit), so
+// Below 960px the header's nav links are hidden (they don't fit), so
 // this adds a menu button that opens them as a dropdown. Built here,
 // not in each page's HTML, so every page that has a <header><nav>
 // gets it automatically. The button is hidden on wide screens by CSS.

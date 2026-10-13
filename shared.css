@@ -45,11 +45,11 @@ header{
   background:var(--linen);
 }
 header .wrap{display:flex;justify-content:space-between;align-items:center;}
-.brand{font-family:'Fraunces', serif;font-size:1.3rem;font-style:italic;font-weight:500;letter-spacing:0.01em;}
+.brand{font-family:'Fraunces', serif;font-size:1.3rem;font-style:italic;font-weight:500;letter-spacing:0.01em;white-space:nowrap;}
 nav{display:none;gap:28px;font-size:0.95rem;}
 nav a{text-decoration:none;position:relative;padding-bottom:4px;}
 nav a:hover{color:var(--berry);}
-@media(min-width:820px){nav{display:flex;}}
+@media(min-width:960px){nav{display:flex;}}
 
 /* mobile menu button + dropdown (built by initMobileNav in shared.js) */
 /* The header stays pinned to the top of the screen while scrolling, so
@@ -72,7 +72,7 @@ html{scroll-padding-top:calc(var(--header-h, 76px) - 1px);}
 header.nav-open .nav-toggle span:nth-child(1){transform:translateY(7px) rotate(45deg);}
 header.nav-open .nav-toggle span:nth-child(2){opacity:0;}
 header.nav-open .nav-toggle span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
-@media(max-width:819.98px){
+@media(max-width:959.98px){
   header.nav-open nav{
     display:flex;flex-direction:column;gap:0;
     position:absolute;top:100%;left:0;right:0;
@@ -88,7 +88,7 @@ header.nav-open .nav-toggle span:nth-child(3){transform:translateY(-7px) rotate(
   header.nav-open nav a{padding:14px 0;border-bottom:1px solid rgba(43,43,36,0.1);font-size:1.05rem;}
   header.nav-open nav a:last-child{border-bottom:none;}
 }
-@media(min-width:820px){.nav-toggle{display:none;}}
+@media(min-width:960px){.nav-toggle{display:none;}}
 
 /* contact-form spam trap: off-screen rather than display:none, which
    bots are more likely to recognise and skip */
