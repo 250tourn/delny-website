@@ -3,13 +3,12 @@
 #
 # The Content-Security-Policy below is an allow-list of the outside
 # services this site genuinely uses (and nothing else):
-#   Google Fonts ........ fonts.googleapis.com / fonts.gstatic.com
+#   Fonts ............... hosted on this site itself (/fonts, fonts.css)
 #   Google Drive photos . lh3.googleusercontent.com
 #   Google Sheet content  docs.google.com
 #   Contact form ........ formspree.io
 #   Newsletter signup ... MailerLite (mailerlite.com, mlcdn.com, mlsend.com)
 #                         plus Google reCAPTCHA, which its form uses
-#   Placeholder images .. placehold.co (fallbacks in index.html)
 # If a NEW outside service is ever added to the site (an analytics
 # script, an embedded video, a different form provider...) it has to be
 # added here too, or the browser will block it.
@@ -17,7 +16,7 @@
 # style attributes.
 
 /*
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://*.mailerlite.com https://*.mlcdn.com https://www.google.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.mailerlite.com https://*.mlcdn.com; font-src 'self' https://fonts.gstatic.com https://*.mlcdn.com https://*.mailerlite.com data:; img-src 'self' data: https://*.googleusercontent.com https://placehold.co https://*.mailerlite.com https://*.mlcdn.com https://www.gstatic.com; connect-src 'self' https://docs.google.com https://*.googleusercontent.com https://formspree.io https://*.mailerlite.com https://*.mlcdn.com https://*.mlsend.com https://www.google.com; frame-src https://www.google.com https://*.mailerlite.com; form-action 'self' https://formspree.io https://*.mailerlite.com; base-uri 'self'; object-src 'none'; frame-ancestors 'none'
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://*.mailerlite.com https://*.mlcdn.com https://www.google.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://*.mailerlite.com https://*.mlcdn.com; font-src 'self' https://*.mlcdn.com https://*.mailerlite.com data:; img-src 'self' data: https://*.googleusercontent.com https://*.mailerlite.com https://*.mlcdn.com https://www.gstatic.com; connect-src 'self' https://docs.google.com https://*.googleusercontent.com https://formspree.io https://*.mailerlite.com https://*.mlcdn.com https://*.mlsend.com https://www.google.com; frame-src https://www.google.com https://*.mailerlite.com; form-action 'self' https://formspree.io https://*.mailerlite.com; base-uri 'self'; object-src 'none'; frame-ancestors 'none'
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
