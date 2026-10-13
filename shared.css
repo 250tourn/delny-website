@@ -56,10 +56,13 @@ nav a:hover{color:var(--berry);}
    the menu is always one tap away. --header-h is set from the header's
    real height by initStickyHeader() in shared.js; scroll-padding-top
    uses it so that jumping to a section (#shop etc.) lands just below
-   the header instead of underneath it. */
+   the header instead of underneath it. It's the header's height minus
+   1px — flush, with no gap, because any gap would show a strip of the
+   section above peeping out under the header. (The 1px covers the
+   header's height being rounded to a whole pixel.) */
 header{position:sticky;top:0;z-index:20;transition:box-shadow .2s ease;}
 header.is-stuck{box-shadow:0 1px 0 rgba(43,43,36,0.08),0 8px 20px rgba(43,43,36,0.08);}
-html{scroll-padding-top:calc(var(--header-h, 76px) + 8px);}
+html{scroll-padding-top:calc(var(--header-h, 76px) - 1px);}
 .nav-toggle{
   display:flex;flex-direction:column;justify-content:center;gap:5px;
   width:44px;height:44px;margin:-8px -10px -8px 0;padding:0 10px;
