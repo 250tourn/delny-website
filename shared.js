@@ -381,3 +381,20 @@ function initMobileNav() {
   document.addEventListener('keydown', e => { if (e.key === 'Escape') setOpen(false); });
 }
 document.addEventListener('DOMContentLoaded', initMobileNav);
+
+// Keeps the header pinned (CSS: position:sticky). This records its real
+// height as --header-h — used so section links land below it, not under
+// it — and adds a soft shadow once the page has been scrolled.
+function initStickyHeader() {
+  const header = document.querySelector('header');
+  if (!header) return;
+  const setHeight = () => document.documentElement.style.setProperty('--header-h', header.offsetHeight + 'px');
+  const onScroll = () => header.classList.toggle('is-stuck', window.scrollY > 4);
+  setHeight();
+  onScroll();
+  window.addEventListener('resize', setHeight);
+  window.addEventListener('scroll', onScroll, { passive: true });
+  // web fonts can change the header's height once they've loaded
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(setHeight);
+}
+document.addEventListener('DOMContentLoaded', initStickyHeader);

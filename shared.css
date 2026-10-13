@@ -52,7 +52,14 @@ nav a:hover{color:var(--berry);}
 @media(min-width:820px){nav{display:flex;}}
 
 /* mobile menu button + dropdown (built by initMobileNav in shared.js) */
-header{position:relative;z-index:20;}
+/* The header stays pinned to the top of the screen while scrolling, so
+   the menu is always one tap away. --header-h is set from the header's
+   real height by initStickyHeader() in shared.js; scroll-padding-top
+   uses it so that jumping to a section (#shop etc.) lands just below
+   the header instead of underneath it. */
+header{position:sticky;top:0;z-index:20;transition:box-shadow .2s ease;}
+header.is-stuck{box-shadow:0 1px 0 rgba(43,43,36,0.08),0 8px 20px rgba(43,43,36,0.08);}
+html{scroll-padding-top:calc(var(--header-h, 76px) + 8px);}
 .nav-toggle{
   display:flex;flex-direction:column;justify-content:center;gap:5px;
   width:44px;height:44px;margin:-8px -10px -8px 0;padding:0 10px;
@@ -70,6 +77,10 @@ header.nav-open .nav-toggle span:nth-child(3){transform:translateY(-7px) rotate(
     padding:4px 24px 14px;
     border-top:1px solid rgba(43,43,36,0.12);
     box-shadow:0 14px 24px rgba(43,43,36,0.12);
+    /* never taller than the screen (a phone held sideways): scroll
+       inside the menu instead of running off the bottom */
+    max-height:calc(100vh - var(--header-h, 76px));
+    overflow-y:auto;
   }
   header.nav-open nav a{padding:14px 0;border-bottom:1px solid rgba(43,43,36,0.1);font-size:1.05rem;}
   header.nav-open nav a:last-child{border-bottom:none;}
