@@ -602,8 +602,10 @@ function blurbHtml(blurb) {
   `;
 }
 
-function eventCardHtml(ev) {
-  const bookingLink = ev.BookingLink || ev['Booking Link'];
+function eventCardHtml(ev, isPast) {
+  // A past event can't be booked, so it gets no "Book now" link — just
+  // a quiet "Past event" tag and a softer look (see .is-past in the CSS).
+  const bookingLink = isPast ? '' : (ev.BookingLink || ev['Booking Link']);
   const logoUrl = ev.LogoImage || ev['Logo Image'];
   // A real venue logo replaces the generic pin icon when one's given;
   // otherwise the pin icon carries on as before.
@@ -616,9 +618,10 @@ function eventCardHtml(ev) {
     ev.Price ? `<span class="meta-item">${ICON_TAG}${escapeHtml(ev.Price)}</span>` : ''
   ].join('');
   return `
-    <div class="event-row${logoUrl ? ' has-venue-img' : ''}">
+    <div class="event-row${logoUrl ? ' has-venue-img' : ''}${isPast ? ' is-past' : ''}">
       <div class="event-date">${escapeHtml(ev.Date)}</div>
       <div>
+        ${isPast ? '<span class="event-past-tag">Past event</span>' : ''}
         <div class="event-title">${escapeHtml(ev.Title)}</div>
         <div class="event-meta">${metaItems}</div>
         ${ev.Blurb ? blurbHtml(ev.Blurb) : ''}
@@ -643,21 +646,22 @@ function renderEvents(items) {
   const past = withDates.filter(x => x.date && x.date < today).sort((a, b) => b.date - a.date);
   // Past events beyond the 3 most recent get tucked away; everything
   // else (upcoming, undated, or one of those 3) stays visible.
-  const olderPastEvents = new Set(past.slice(3).map(x => x.ev));
+  // Upcoming (and undated) events first, in sheet order; then the
+  // recent past ones, most recent first, so what's bookable leads.
+  const pastSet = new Set(past.map(x => x.ev));
+  const upcoming = items.filter(ev => !pastSet.has(ev));
+  const recentPast = past.slice(0, 3).map(x => x.ev);
+  const visible = [...upcoming, ...recentPast];
+  const older = past.slice(3).map(x => x.ev);
 
-  const visible = [];
-  const older = [];
-  items.forEach(ev => {
-    (olderPastEvents.has(ev) ? older : visible).push(ev);
-  });
-
-  document.getElementById('event-list').innerHTML = visible.map(eventCardHtml).join('');
+  const render = list => list.map(ev => eventCardHtml(ev, pastSet.has(ev))).join('');
+  document.getElementById('event-list').innerHTML = render(visible);
 
   eventsOlderCount = older.length;
   const olderWrap = document.getElementById('events-older');
   const toggleBtn = document.getElementById('events-toggle-older');
   if (olderWrap && toggleBtn) {
-    olderWrap.innerHTML = older.map(eventCardHtml).join('');
+    olderWrap.innerHTML = render(older);
     olderWrap.hidden = true;
     toggleBtn.hidden = older.length === 0;
     toggleBtn.textContent = `Show ${older.length} earlier event${older.length === 1 ? '' : 's'}`;

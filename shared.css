@@ -297,6 +297,19 @@ section{padding:64px 0;}
 .blurb-toggle{display:inline;background:none;border:none;padding:0;margin-left:4px;font:inherit;font-size:0.85rem;text-decoration:underline;color:var(--berry);cursor:pointer;}
 .blurb-toggle:hover{color:var(--moss-dark);}
 .event-link{font-size:0.88rem;text-decoration:underline;color:var(--berry);}
+/* past events: softened, no booking link, labelled so it's obvious */
+.event-row.is-past{opacity:0.62;}
+.event-past-tag{
+  display:inline-block;
+  font-size:0.7rem;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  color:#6a6a5c;
+  border:1px solid rgba(43,43,36,0.25);
+  border-radius:2px;
+  padding:1px 7px;
+  margin-bottom:6px;
+}
 
 /* a larger venue image, filling the space to the right of the text on
    wider screens (the blurb's own 56ch cap is what leaves that space) */
