@@ -9,6 +9,7 @@
   --moss-dark:#2E3728;
   --berry:#7A4B5C;
   --ochre:#B98A2E;
+  --ochre-soft:#EBDBB0;
   --line: rgba(43,43,36,0.18);
 }
 *{box-sizing:border-box;}
@@ -49,7 +50,7 @@ header .wrap{display:flex;justify-content:space-between;align-items:center;}
 nav{display:none;gap:28px;font-size:0.95rem;}
 nav a{text-decoration:none;position:relative;padding-bottom:4px;}
 nav a:hover{color:var(--berry);}
-@media(min-width:960px){nav{display:flex;}}
+@media(min-width:1120px){nav{display:flex;}}
 
 /* mobile menu button + dropdown (built by initMobileNav in shared.js) */
 /* The header stays pinned to the top of the screen while scrolling, so
@@ -72,7 +73,7 @@ html{scroll-padding-top:calc(var(--header-h, 76px) - 1px);}
 header.nav-open .nav-toggle span:nth-child(1){transform:translateY(7px) rotate(45deg);}
 header.nav-open .nav-toggle span:nth-child(2){opacity:0;}
 header.nav-open .nav-toggle span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
-@media(max-width:959.98px){
+@media(max-width:1119.98px){
   header.nav-open nav{
     display:flex;flex-direction:column;gap:0;
     position:absolute;top:100%;left:0;right:0;
@@ -88,7 +89,7 @@ header.nav-open .nav-toggle span:nth-child(3){transform:translateY(-7px) rotate(
   header.nav-open nav a{padding:14px 0;border-bottom:1px solid rgba(43,43,36,0.1);font-size:1.05rem;}
   header.nav-open nav a:last-child{border-bottom:none;}
 }
-@media(min-width:960px){.nav-toggle{display:none;}}
+@media(min-width:1120px){.nav-toggle{display:none;}}
 
 /* contact-form spam trap: off-screen rather than display:none, which
    bots are more likely to recognise and skip */
@@ -531,6 +532,70 @@ section{padding:64px 0;}
   white-space:nowrap;
 }
 .option-buy:hover{background:var(--moss-dark);}
+
+/* weekly class — Create & Connect Weekly.
+   Deliberately looks different from the Events list above it: its own
+   warm band, a "stitched" dashed-border card, and one clear booking
+   button, so it reads as a regular class rather than a one-off event. */
+.weekly-band{background:var(--ochre-soft);}
+.weekly-head{max-width:60ch;margin-bottom:32px;}
+.weekly-head h2{font-size:clamp(1.8rem,4vw,2.6rem);margin-bottom:0.3em;}
+.weekly-head p{color:#4b4b40;margin:0;}
+.weekly-tag{
+  display:inline-block;
+  font-size:0.72rem;font-weight:600;
+  letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--moss-dark);background:var(--ochre);
+  padding:4px 12px;border-radius:2px;
+  margin-bottom:14px;
+}
+.weekly-list{display:grid;gap:22px;}
+.weekly-card{
+  background:#FBF8F0;
+  border:2px dashed var(--ochre);
+  border-radius:2px;
+  padding:28px;
+  display:grid;gap:26px;
+}
+@media(min-width:800px){
+  .weekly-card{grid-template-columns:1.15fr 1fr;gap:44px;padding:36px;align-items:start;}
+}
+.weekly-status{
+  display:inline-block;
+  font-size:0.78rem;font-weight:500;
+  padding:3px 11px;border-radius:999px;
+  margin-bottom:12px;
+}
+.weekly-status.is-open{background:var(--moss);color:var(--linen);}
+.weekly-status.is-full{background:var(--berry);color:#fff;}
+.weekly-status.is-soon{background:transparent;color:var(--moss-dark);border:1px solid var(--ochre);}
+.weekly-main h3{font-size:clamp(1.5rem,3vw,2rem);margin:0 0 0.2em;}
+.weekly-summary{
+  font-family:'Fraunces', serif;font-style:italic;
+  font-size:1.1rem;color:var(--berry);
+  margin:0 0 14px;
+}
+.weekly-desc p{color:#4b4b40;margin:0 0 0.8em;font-size:0.95rem;}
+.weekly-desc p:last-child{margin-bottom:0;}
+.weekly-facts{margin:0 0 22px;}
+.weekly-facts > div{
+  display:grid;grid-template-columns:5.5em 1fr;gap:12px;
+  padding:10px 0;
+  border-top:1px dashed rgba(185,138,46,0.55);
+  font-size:0.95rem;
+}
+.weekly-facts > div:first-child{border-top:none;padding-top:0;}
+.weekly-facts dt{
+  font-size:0.74rem;letter-spacing:0.08em;text-transform:uppercase;
+  color:#6a6a5c;padding-top:3px;
+}
+.weekly-facts dd{margin:0;color:var(--ink);}
+.weekly-book{text-align:center;width:100%;}
+@media(min-width:800px){.weekly-book{width:auto;}}
+.weekly-note{
+  max-width:60ch;margin:22px 0 0;
+  font-size:0.88rem;color:#6a6a5c;
+}
 
 /* newsletter */
 .newsletter-wrap{max-width:600px;margin:0 auto;text-align:center;}

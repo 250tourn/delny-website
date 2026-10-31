@@ -50,6 +50,7 @@
         <a href="#gallery">Gallery</a>
         <a href="#teaching">Teaching</a>
         <a href="#events">Events</a>
+        <a href="#weekly">Weekly Class</a>
         <a href="#commissions">Commissions</a>
         <a href="#shop">Shop</a>
         <a href="#news">News</a>
@@ -225,6 +226,38 @@
       <button id="events-toggle-older" type="button" class="news-toggle" hidden>Show earlier events</button>
     </p>
     <div class="event-list" id="events-older" hidden style="margin-top:8px;"></div>
+  </div>
+</section>
+
+<!-- The weekly class is deliberately its own section, set apart from the
+     one-off workshops above. The card below is a built-in fallback —
+     renderWeekly() replaces it with whatever is in the "Weekly" tab of
+     the Google Sheet (see the setup notes at the top of shared.js). -->
+<section id="weekly" class="weekly-band reveal">
+  <div class="wrap">
+    <div class="weekly-head">
+      <span class="weekly-tag">New for January</span>
+      <h2>Create &amp; Connect Weekly</h2>
+      <p>A weekly art class for adults. Each course explores a theme through mixed media, with time to experiment and enjoy making alongside others — no experience needed. Book a single session, or a whole block.</p>
+    </div>
+    <div class="weekly-list" id="weekly-list">
+      <article class="weekly-card">
+        <div class="weekly-main">
+          <span class="weekly-status is-open">Booking open</span>
+          <h3>Natural Forms</h3>
+          <p class="weekly-summary">Thursdays at 10am from 21 January 2027</p>
+          <div class="weekly-desc"><p>Full dates, prices and places are on the booking page.</p></div>
+        </div>
+        <div class="weekly-side">
+          <dl class="weekly-facts">
+            <div><dt>When</dt><dd>Thursdays at 10am, starting 21 January 2027</dd></div>
+            <div><dt>Places</dt><dd>12</dd></div>
+          </dl>
+          <a class="btn btn-primary weekly-book" href="https://bookwhen.com/delny" target="_blank" rel="noopener">See dates &amp; book</a>
+        </div>
+      </article>
+    </div>
+    <p class="weekly-note">Bookings and payments are handled securely by Bookwhen, so you'll move to their page to choose your dates. Questions first? <a href="#contact" style="text-decoration:underline;color:var(--berry);">Get in touch</a>.</p>
   </div>
 </section>
 
@@ -731,6 +764,69 @@ function wireEventsToggle() {
   });
 }
 
+// ---- Create & Connect Weekly: the "Weekly" tab ----
+// One card per course. Anything left blank in the Sheet is simply left
+// out of the card, so a course can be added with just a title, summary
+// and status and filled in as the details are settled.
+const WEEKLY_DEFAULT_LINK = 'https://bookwhen.com/delny';
+
+function weeklyStatus(raw) {
+  const text = String(raw || '').trim();
+  const s = text.toLowerCase();
+  if (/^(hidden|finished|closed|ended)/.test(s)) return { key: 'hidden' };
+  if (/^(full|fully booked|sold out)/.test(s)) return { key: 'full', label: 'Fully booked' };
+  if (/^(coming soon|soon)/.test(s)) return { key: 'soon', label: 'Booking opens soon' };
+  return { key: 'open', label: text || 'Booking open' };
+}
+
+function weeklyCardHtml(item) {
+  const st = weeklyStatus(item.Status);
+  if (st.key === 'hidden') return '';
+  const clean = v => String(v || '').trim();
+  const link = safeUrl(item.BookingLink) || WEEKLY_DEFAULT_LINK;
+  const when = [clean(item.Dates), clean(item.Time)].filter(Boolean).join(' · ');
+  const facts = [['When', when], ['Where', clean(item.Venue)], ['Price', clean(item.Price)], ['Places', clean(item.Places)]]
+    .filter(([, v]) => v)
+    .map(([k, v]) => `<div><dt>${k}</dt><dd>${escapeHtml(v).replace(/\n/g, '<br>')}</dd></div>`)
+    .join('');
+  const desc = clean(item.Description) ? `<div class="weekly-desc">${renderBodyHtml(item.Description)}</div>` : '';
+  const button = st.key === 'soon'
+    ? `<a class="btn btn-primary weekly-book" href="#newsletter">Get notified when booking opens</a>`
+    : `<a class="btn btn-primary weekly-book" href="${escapeHtml(link)}" target="_blank" rel="noopener">${st.key === 'full' ? 'Check availability' : 'See dates &amp; book'}</a>`;
+  return `
+    <article class="weekly-card">
+      <div class="weekly-main">
+        <span class="weekly-status is-${st.key}">${escapeHtml(st.label)}</span>
+        <h3>${escapeHtml(item.Title)}</h3>
+        ${clean(item.Summary) ? `<p class="weekly-summary">${escapeHtml(item.Summary)}</p>` : ''}
+        ${desc}
+      </div>
+      <div class="weekly-side">
+        ${facts ? `<dl class="weekly-facts">${facts}</dl>` : ''}
+        ${button}
+      </div>
+    </article>
+  `;
+}
+
+function renderWeekly(items) {
+  // No rows at all: leave the built-in card in place rather than blank it.
+  if (!items.length) return;
+  const cards = items.filter(it => String(it.Title || '').trim()).map(weeklyCardHtml).filter(Boolean);
+  const list = document.getElementById('weekly-list');
+  if (!list) return;
+  list.innerHTML = cards.length ? cards.join('') : `
+    <article class="weekly-card weekly-card--empty">
+      <div class="weekly-main">
+        <h3>The next course will be announced soon</h3>
+        <p class="weekly-summary">Join the mailing list and you'll hear about it first.</p>
+      </div>
+      <div class="weekly-side">
+        <a class="btn btn-primary weekly-book" href="#newsletter">Join the mailing list</a>
+      </div>
+    </article>`;
+}
+
 // A painter's palette — for the one-off original piece.
 const ICON_ORIGINAL = '<svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3c-4.4 0-7.5 3-7.5 6.8 0 2.3 1.5 3.4 3 3.4.8 0 1-.5.6-1.1-.5-.7-.2-1.6.7-1.8 3.7-.9 7.7-1.6 7.7-4.6C14.5 4.3 12.5 3 10 3Z"/><circle cx="7.3" cy="8.6" r="0.9"/><circle cx="10.2" cy="6.8" r="0.9"/><circle cx="12.7" cy="8.6" r="0.9"/></svg>';
 // A small stack of framed landscape prints — for limited edition prints.
@@ -948,6 +1044,7 @@ document.addEventListener('DOMContentLoaded', () => {
       .catch(err => console.warn('[Delny site] Gallery:', err.message))
       .finally(() => wireGalleryArrows()),
     fetchTab(EVENTS_TAB, ['Date', 'Title']).then(renderEvents).catch(err => console.warn('[Delny site] Events:', err.message)),
+    fetchTab(WEEKLY_TAB, ['Title', 'Summary', 'Status']).then(renderWeekly).catch(err => console.warn('[Delny site] Weekly:', err.message)),
     fetchTab(SHOP_TAB, ['Title', 'Price', 'ImageURL', 'BuyLink']).then(renderShop).catch(err => console.warn('[Delny site] Shop:', err.message)),
     fetchTab(NEWS_TAB, ['Date', 'Title', 'Excerpt']).then(renderNews).catch(err => console.warn('[Delny site] News:', err.message)),
     fetchTab(TESTIMONIALS_TAB, ['Quote', 'Author'])

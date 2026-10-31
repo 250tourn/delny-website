@@ -99,6 +99,34 @@
                        specific option's own PayPal/Stripe link, since
                        each size or pack usually needs its own price.
 
+        "Weekly" — the Create & Connect Weekly class section, one row per
+        course. Header row:
+          Title | Summary | Dates | Time | Venue | Price | Places |
+          Description | Status | BookingLink
+          - Title:       the course name, e.g. "Natural Forms".
+          - Summary:     one line under the title, e.g. "Thursdays at 10am
+                         from 21 January 2027".
+          - Dates:       (optional) e.g. "21 & 28 Jan, 4 & 11 Feb".
+          - Time:        (optional) e.g. "10:00am – 12:00pm".
+          - Venue:       (optional) hall name and town.
+          - Price:       (optional) e.g. "£15 a session — or £50 for the
+                         4-week block". Alt+Enter makes a new line.
+          - Places:      (optional) e.g. "12".
+          - Description: (optional) a few sentences about the course. The
+                         same light formatting as News posts works here
+                         (blank line = new paragraph, **bold**, links).
+          - Status:      "Booking open" (or leave blank), "Full" (shows
+                         "Fully booked"), "Coming soon" (shows a "get
+                         notified" button instead of a booking button), or
+                         "Hidden" / "Finished" (row isn't shown at all).
+                         Any other text is shown as the badge as written,
+                         e.g. "Booking open — 3 places left".
+          - BookingLink: the Bookwhen address for this course. Leave blank
+                         to use https://bookwhen.com/delny.
+          - Rows show in the order they appear in the sheet. If every row
+            is Hidden/Finished the section says the next course is coming
+            soon. If this tab is missing, a built-in card is shown instead.
+
         "Testimonials" — header row: Quote | Author
           - Quote:  the testimonial text (no need to add quote marks —
                     the site adds them).
@@ -161,6 +189,7 @@ const GALLERY_TAB = 'Gallery';
 const EVENTS_TAB = 'Events';
 const SHOP_TAB = 'Shop';
 const NEWS_TAB = 'News';
+const WEEKLY_TAB = 'Weekly';
 const TESTIMONIALS_TAB = 'Testimonials';
 const GALLERY_CATEGORIES = ['Landscapes', 'Nature', 'Prints & Cards', 'Sketchbooks'];
 
@@ -364,7 +393,7 @@ function initScrollReveal() {
 }
 document.addEventListener('DOMContentLoaded', initScrollReveal);
 
-// Below 960px the header's nav links are hidden (they don't fit), so
+// Below 1120px the header's nav links are hidden (they don't fit), so
 // this adds a menu button that opens them as a dropdown. Built here,
 // not in each page's HTML, so every page that has a <header><nav>
 // gets it automatically. The button is hidden on wide screens by CSS.
