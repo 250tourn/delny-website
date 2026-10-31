@@ -266,6 +266,13 @@ function safeUrl(url) {
   if (!cleaned) return '';
   if (/^(https?:|mailto:|tel:)/i.test(cleaned)) return cleaned;
   if (/^[a-z][a-z0-9+.\-]*:/i.test(cleaned)) return '';
+  // A web address typed without "https://" (e.g. "www.bookwhen.com/delny"
+  // or "bookwhen.com/delny") would be read by the browser as a page on
+  // this site and lead nowhere. Anything that starts like a domain name
+  // gets the https:// it was missing.
+  if (/^(www\.|[a-z0-9-]+(\.[a-z0-9-]+)*\.(com|org|net|uk|co|io|me|info|app|shop|store|art|eu)(\/|\?|#|$))/i.test(cleaned)) {
+    return 'https://' + cleaned;
+  }
   return cleaned;
 }
 
