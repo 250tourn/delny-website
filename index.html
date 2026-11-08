@@ -927,10 +927,7 @@ let newsOlderCount = 0;
 function newsCardHtml(post, allPosts) {
   const href = `post.html?slug=${encodeURIComponent(newsPostSlug(post, allPosts))}`;
   const thumb = post.CoverImageURL
-    ? `<div class="thumb">
-        <img class="thumb-bg" src="${escapeHtml(toImageUrl(post.CoverImageURL, 60, true))}" alt="" aria-hidden="true">
-        <img class="thumb-fg" src="${escapeHtml(toImageUrl(post.CoverImageURL, 700, true))}" alt="${escapeHtml(post.Title)}" loading="lazy">
-      </div>`
+    ? `<div class="thumb"><img src="${escapeHtml(toImageUrl(post.CoverImageURL, 700, true))}" alt="${escapeHtml(post.Title)}" loading="lazy"></div>`
     : '';
   return `
     <a class="news-card" href="${href}">

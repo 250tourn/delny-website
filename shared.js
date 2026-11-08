@@ -150,6 +150,12 @@
           - Excerpt:       a short 1-2 sentence teaser shown on the
                             homepage card.
           - CoverImageURL: (optional) Drive share link for a header image.
+                            It's shown in a landscape frame (16:10) and
+                            cropped to fit, so it works best when it's
+                            close to that shape, e.g. 1600 x 1000 px, with
+                            anything important kept away from the edges.
+                            A very wide or very tall image will have its
+                            sides or top/bottom cut off.
           - Body:          the full post, shown on its own page when the
                             card is clicked. Tip: draft it somewhere
                             comfortable first (Notepad, Google Docs, Word)
