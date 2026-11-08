@@ -927,7 +927,10 @@ let newsOlderCount = 0;
 function newsCardHtml(post, allPosts) {
   const href = `post.html?slug=${encodeURIComponent(newsPostSlug(post, allPosts))}`;
   const thumb = post.CoverImageURL
-    ? `<div class="thumb"><img src="${escapeHtml(toImageUrl(post.CoverImageURL, 700, true))}" alt="${escapeHtml(post.Title)}" loading="lazy"></div>`
+    ? `<div class="thumb">
+        <img class="thumb-bg" src="${escapeHtml(toImageUrl(post.CoverImageURL, 60, true))}" alt="" aria-hidden="true">
+        <img class="thumb-fg" src="${escapeHtml(toImageUrl(post.CoverImageURL, 700, true))}" alt="${escapeHtml(post.Title)}" loading="lazy">
+      </div>`
     : '';
   return `
     <a class="news-card" href="${href}">
@@ -949,11 +952,22 @@ function renderNews(items) {
   const cutoff = new Date();
   cutoff.setFullYear(cutoff.getFullYear() - 1);
 
+  // Newest first, whatever order the rows are in the Sheet — so a new
+  // post can simply be added at the bottom. Posts on the same date keep
+  // later-row-first (a newer row is assumed to be the newer post), and a
+  // post whose Date can't be read floats to the top rather than being
+  // buried or lost, matching the "treat as recent" rule above.
+  const dated = items.map((post, index) => ({ post, index, date: parseUkDate(post.Date) }));
+  dated.sort((a, b) => {
+    const ta = a.date ? a.date.getTime() : Infinity;
+    const tb = b.date ? b.date.getTime() : Infinity;
+    return (tb - ta) || (b.index - a.index);
+  });
+
   const recent = [];
   const older = [];
-  items.forEach(post => {
-    const parsed = new Date(post.Date);
-    (!isNaN(parsed) && parsed < cutoff ? older : recent).push(post);
+  dated.forEach(({ post, date }) => {
+    (date && date < cutoff ? older : recent).push(post);
   });
 
   document.getElementById('news-list').innerHTML = recent.map(post => newsCardHtml(post, items)).join('');

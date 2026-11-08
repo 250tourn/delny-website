@@ -409,9 +409,13 @@ section{padding:64px 0;}
 .news-post p{font-size:0.92rem;color:#4b4b40;margin:0 0 10px 0;}
 
 .news-card{display:block;text-decoration:none;color:inherit;}
-.news-card .thumb{aspect-ratio:16/10;background:#ddd;border-radius:2px;overflow:hidden;margin-bottom:14px;}
-.news-card .thumb img{width:100%;height:100%;object-fit:cover;transition:transform .4s ease;}
-.news-card:hover .thumb img{transform:scale(1.04);}
+/* Same idea as the shop thumbnails: every card keeps the same frame, the
+   whole cover image is shown uncropped (thumb-fg), and any spare room at
+   the sides is filled with a blurred echo of it (thumb-bg) — so a wide
+   graphic or a tall photo is never sliced off. */
+.news-card .thumb{position:relative;aspect-ratio:16/10;background:var(--linen);border-radius:2px;overflow:hidden;margin-bottom:14px;}
+.news-card .thumb-fg{transition:transform .4s ease;}
+.news-card:hover .thumb-fg{transform:scale(1.04);}
 .news-card h3{font-size:1.1rem;margin-bottom:8px;}
 .news-card p{font-size:0.92rem;color:#4b4b40;margin:0 0 10px 0;}
 .news-card .read-more{font-size:0.85rem;text-decoration:underline;color:var(--berry);}
@@ -451,7 +455,8 @@ section{padding:64px 0;}
    rather than flat empty colour — reads as an intentional frame,
    not a gap. */
 .shop-card .thumb{position:relative;aspect-ratio:4/3;border-radius:2px;margin-bottom:14px;overflow:hidden;background:var(--linen);}
-.shop-card .thumb-bg{
+.shop-card .thumb-bg,
+.news-card .thumb-bg{
   position:absolute;
   inset:-14px;
   width:calc(100% + 28px);
@@ -460,7 +465,8 @@ section{padding:64px 0;}
   filter:blur(18px) brightness(0.92);
   transform:scale(1.08);
 }
-.shop-card .thumb-fg{
+.shop-card .thumb-fg,
+.news-card .thumb-fg{
   position:relative;
   z-index:1;
   width:100%;

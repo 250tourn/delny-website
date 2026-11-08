@@ -137,8 +137,10 @@
             of the homepage, in the order they appear in the sheet.
 
         "News" — header row: Date | Title | Excerpt | CoverImageURL | Body
-          - Rows display in the order they appear in the sheet, so put
-            the newest post at the top.
+          - Posts are shown newest first, sorted by their Date, so it
+            doesn't matter where in the sheet a new row goes — adding it
+            at the bottom is fine. (Posts on the same date appear
+            later-row-first.)
           - Posts with a Date more than a year old are automatically
             tucked behind a "Show earlier posts" link on the homepage,
             so the section doesn't turn into one long wall of old news.
