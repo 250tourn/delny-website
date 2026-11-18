@@ -583,6 +583,19 @@ function openLightbox(images, startIndex) {
   lb.classList.add('open');
   document.body.style.overflow = 'hidden';
 }
+// Shop images open in the same viewer. ‹ › steps through every shop
+// image on the page, and focus goes back to the image that was opened
+// (so keyboard users aren't dropped at the top of the page).
+let lightboxReturnFocus = null;
+function openShopImage(thumb) {
+  const thumbs = [...document.querySelectorAll('.shop-card .thumb[role="button"]')];
+  const images = thumbs.map(t => {
+    const img = t.querySelector('.thumb-fg');
+    return { src: img.dataset.full || img.src, alt: img.alt };
+  });
+  lightboxReturnFocus = thumb;
+  openLightbox(images, thumbs.indexOf(thumb));
+}
 function closeLightbox() {
   const lb = document.getElementById('lightbox');
   if (!lb) return;
@@ -590,6 +603,10 @@ function closeLightbox() {
   document.body.style.overflow = '';
   document.getElementById('lightbox-img').src = '';
   lightboxImages = [];
+  if (lightboxReturnFocus) {
+    lightboxReturnFocus.focus({ preventScroll: true });
+    lightboxReturnFocus = null;
+  }
 }
 function wireLightbox() {
   const lb = document.getElementById('lightbox');
@@ -614,6 +631,13 @@ function wireLightbox() {
       blurbToggle.previousElementSibling.hidden = expanded;
       return;
     }
+    // Shop image -> full-screen view. Only thumbnails the Sheet rendered
+    // (they have role="button") — not the built-in placeholder blocks.
+    const shopThumb = e.target.closest('.shop-card .thumb[role="button"]');
+    if (shopThumb) {
+      openShopImage(shopThumb);
+      return;
+    }
     const trigger = e.target.closest('[data-lightbox]');
     if (trigger) {
       e.preventDefault();
@@ -634,7 +658,15 @@ function wireLightbox() {
     }
   });
   document.addEventListener('keydown', (e) => {
-    if (!lb.classList.contains('open')) return;
+    if (!lb.classList.contains('open')) {
+      // Keyboard users open a shop image with Enter or Space.
+      const thumb = e.target.closest && e.target.closest('.shop-card .thumb[role="button"]');
+      if (thumb && (e.key === 'Enter' || e.key === ' ')) {
+        e.preventDefault();
+        openShopImage(thumb);
+      }
+      return;
+    }
     if (e.key === 'Escape') closeLightbox();
     if (e.key === 'ArrowRight') showLightboxImage(lightboxIndex + 1);
     if (e.key === 'ArrowLeft') showLightboxImage(lightboxIndex - 1);
@@ -909,9 +941,9 @@ function renderShop(items) {
       `;
     return `
     <div class="shop-card">
-      <div class="thumb">
+      <div class="thumb" role="button" tabindex="0" aria-label="View a larger image of ${escapeHtml(item.Title)}">
         <img class="thumb-bg" src="${escapeHtml(toImageUrl(item.ImageURL, 60, true))}" alt="" aria-hidden="true">
-        <img class="thumb-fg" src="${escapeHtml(toImageUrl(item.ImageURL, 700, true))}" alt="${escapeHtml(item.Title)}" loading="lazy">
+        <img class="thumb-fg" src="${escapeHtml(toImageUrl(item.ImageURL, 700, true))}" data-full="${escapeHtml(toImageUrl(item.ImageURL, 2000, true))}" alt="${escapeHtml(item.Title)}" loading="lazy">
       </div>
       <h3>${escapeHtml(item.Title)}</h3>
       ${item.Dimensions ? `<div class="dimensions">${escapeHtml(item.Dimensions)}</div>` : ''}

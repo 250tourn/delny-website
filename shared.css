@@ -462,6 +462,18 @@ section{padding:64px 0;}
   filter:blur(18px) brightness(0.92);
   transform:scale(1.08);
 }
+/* Shop images open full-screen on click/tap. The small magnifier badge
+   is there for touch screens, which have no hover to hint at it. */
+.shop-card .thumb[role="button"]{cursor:zoom-in;}
+.shop-card .thumb[role="button"]:focus-visible{outline:3px solid var(--ochre);outline-offset:2px;}
+.shop-card .thumb[role="button"]::after{
+  content:"";
+  position:absolute;right:10px;bottom:10px;z-index:2;
+  width:32px;height:32px;border-radius:50%;
+  background:rgba(251,248,240,0.92) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%232B2B24' stroke-width='1.6' stroke-linecap='round'%3E%3Ccircle cx='8.5' cy='8.5' r='5.5'/%3E%3Cpath d='M12.6 12.6L17 17M6.5 8.5h4M8.5 6.5v4'/%3E%3C/svg%3E") center/17px 17px no-repeat;
+  box-shadow:0 1px 5px rgba(0,0,0,0.28);
+  pointer-events:none;
+}
 .shop-card .thumb-fg{
   position:relative;
   z-index:1;
